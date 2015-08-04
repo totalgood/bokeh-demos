@@ -241,8 +241,7 @@ def newapplet():
         {
             "main_plot": p,
             "selection_plot": create_selection_plot(p, theme),
-        },
-        INLINE
+        }
     )
     themes = ["default", "dark"]
     options = { k: 'selected="selected"' if theme == k else "" for k in themes}

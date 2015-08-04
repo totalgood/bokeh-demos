@@ -80,7 +80,28 @@
             <div id="side_bar">
                 <div id="plugins_wrapper">
                     <h1>AAPL</h1>
-                    <div id="details_panel" class="hidden"></div>
+                    <div id="details_panel">
+                        <h1>Intro</h1>
+                        <p>
+                            This example shows a simple interactive application that performs
+                            realtime downsampling over <b>simulated</b> stocks prices over
+                            period of 15 years using bokeh AjaxDataSource anda simple flask server.
+                        </p>
+                        <h1>Instructions</h1>
+                        <p>
+                            Use the smaller plot on the top to select regions of data over the
+                            entire time period.
+                            After a period of time is selected the main plot below will update its
+                            ranges to the selected period and data will be resampled to increase
+                            data resolution accordingly to the selection.
+                            To restore the initial ranges simply press 'ESC'.
+                        </p>
+                        <h1>Changing theme</h1>
+                        <p>
+                            It's also possible to change theme using the combobox at the bottom
+                            of the page.
+                        </p>
+                    </div>
                 </div>
             </div>
 

@@ -41,6 +41,7 @@ To run the script execute:
 >> python simple_ajax.py
 
 
+
 stocks_panel
 ============
 
@@ -49,9 +50,25 @@ communications with simple AJAX calls resulting in ranges updates and
 data downsampling on the server side (not bokeh-server but the flask 
 service served by flask_server_minutes).
 
+It includes a smaller top plot and a main plot below. The smaller top 
+plot is intended to be used as general data view where users can select
+a period of data. The lower main plot will be updated with resampled data
+focusing on the selected period.
+
+
 To run the script execute:
 
 >> python stocks_panel.py
+
+
+Instructions: 
+
+1. Run the script as described above. It will open your browser window
+with the example.
+
+2. Use the smaller plot on the top to select regions of data to display on 
+the main plot below.
+
 
 
 custom_stocks_panel
