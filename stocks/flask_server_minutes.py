@@ -4,13 +4,14 @@ import os.path
 import random
 from functools import partial
 import datetime as dt
-from flask import Flask, json
+from flask import Flask, json, Response
 import h5py
 import numpy as np
 import pandas as pd
 import dask.array as da
 from subsample import coarsen
 from bokeh.server.crossdomain import crossdomain
+from StringIO import StringIO
 
 FACTOR_BASE = 15000
 fromtimestamp = dt.datetime.fromtimestamp
@@ -144,6 +145,19 @@ def get_alldata():
 @crossdomain(origin="*", methods=['GET', 'POST'], headers=None)
 def get_details():
     return json.jsonify(details)
+
+
+@app.route('/alldata.csv', methods=['GET', 'OPTIONS'])
+@crossdomain(origin="*", methods=['GET', 'POST'], headers=None)
+def get_csv_data():
+    df = pd.DataFrame(curr_ds)
+
+    dfbuffer = StringIO()
+    df.to_csv(dfbuffer, encoding='utf-8', index=False)
+    dfbuffer.seek(0)
+    values = dfbuffer.getvalue()
+    return Response(values, mimetype='text/csv')
+
 
 
 if __name__ == '__main__':
