@@ -219,7 +219,7 @@ def create_selection_plot(main_plot, theme):
 from flask import Flask, render_template, jsonify, request
 from bokeh.embed import components
 from bokeh.resources import Resources
-from bokeh.templates import JS_RESOURCES
+from bokeh.templates import JS_RESOURCES, CSS_RESOURCES
 
 application = Flask('Stocks_Demo')
 
@@ -229,11 +229,14 @@ def newapplet():
     INLINE = Resources(mode="inline", minified=False,)
     templname = "stocks_custom.html"
 
-    plot_resources = JS_RESOURCES.render(
+    js_resources = JS_RESOURCES.render(
         js_raw=INLINE.js_raw,
+        js_files=INLINE.js_files
+    )
+
+    css_resources = CSS_RESOURCES.render(
         css_raw=INLINE.css_raw,
-        js_files=INLINE.js_files,
-        css_files=INLINE.css_files,
+        css_files=INLINE.css_files
     )
 
     p = create_main_plot(theme)
@@ -251,7 +254,8 @@ def newapplet():
         theme = theme,
         extra_divs = extra_divs,
         plot_script = plot_script,
-        plot_resources=plot_resources,
+        js_resources=js_resources,
+        css_resources=css_resources,
         theme_options=options,
     )
 
