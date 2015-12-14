@@ -20,3 +20,14 @@ class Employee(models.Model):
     @property
     def teams_list(self):
         return ', '.join([team.name for team in self.teams.all()])
+
+
+class Happiness(models.Model):
+    employee = models.ForeignKey(Employee)
+    date = models.DateField()
+    happiness = models.DecimalField(decimal_places=0, max_digits=1)
+
+    unique_together = (('employee', 'date'),)
+
+    def __str__(self):
+        return '%s %s %s' % (self.employee.user.first_name, self.happiness, self.date)
