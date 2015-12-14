@@ -1,3 +1,8 @@
+import numpy as np
+
+from bokeh.client import pull_session
+from bokeh.embed import autoload_server
+
 from django.contrib.auth.models import User
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
@@ -24,10 +29,30 @@ class IndividualDashboardView(ContextMixin, DetailView):
     model = User
     context_object_name = 'user'
 
+    def get_bokeh_script(self):
+        bokeh_session = pull_session(url='ws://localhost:5006/individual/ws')
+        plot_source = bokeh_session.document.get_model_by_name('source')
+        plot_source.data = self.get_user_data()
+        script = autoload_server(None, app_path='/individual', session_id=bokeh_session.id)
+        return script
+
     def get_context_data(self, *args, **kwargs):
         context = super(IndividualDashboardView, self).get_context_data(*args, **kwargs)
-        context.update(dashboard='individual')
+        context.update(dashboard='individual', script=self.get_bokeh_script())
         return context
+
+    def get_user_data(self):
+        user = self.object
+        if user.employee:
+            h_set = user.employee.happiness_set.all()
+            dates = h_set.values_list('date', flat=True)
+            x = np.array(dates)
+            happinesses = h_set.values_list('happiness', flat=True)
+            y = np.array(happinesses)
+        else:
+            x = []
+            y = []
+        return dict(x=x, y=y)
 
 
 class TeamDashboardView(ContextMixin, DetailView):

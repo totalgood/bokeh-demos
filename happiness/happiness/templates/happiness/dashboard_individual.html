@@ -3,7 +3,7 @@
 {% block dashboard %}
 
 {% if user.employee %}
-<div class="plot"></div>
+<div class="plot">{{ script|safe }}</div>
 <div class="well well-lg">Your happiness chart</div>
 {% endif %}
 
@@ -11,5 +11,6 @@
 <div class="plot"</div>
 <div class="well well-lg">Happiness chart for all the individuals you manage</div>
 {% endif %}
+
 
 {% endblock dashboard %}
