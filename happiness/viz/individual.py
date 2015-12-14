@@ -11,6 +11,8 @@ plot = Plot(
     toolbar_location=None, responsive=True,
     x_range=DataRange1d(), y_range=Range1d(0, 9)
 )
+#plot.add_layout(LinearAxis(), 'left')
+#plot.add_layout(DatetimeAxis(), 'below')
 plot.add_glyph(source, Line(x='x', y='y', line_width=3, line_alpha=0.6, line_color='pink'))
 
 document.add_root(source)
