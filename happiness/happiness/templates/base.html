@@ -19,9 +19,26 @@
     <![endif]-->
   </head>
   <body>
-   <div class="container">
-    {% block content %}
-    {% endblock content %}
+    <div class="container">
+      <div class="row">
+        <div class="page-header">
+          <h1>Happiness <small> tracking team happiness</small></h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <ul class="nav nav-pills nav-stacked">
+              <li role="presentation" class="active"><a href="{% url 'home' %}">Home</a></li>
+            {% for user in users %}
+            <li role="presentation"><a href="{% url 'individual' user.id %}">{{ user.first_name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="col-md-10">
+          {% block content %}
+          {% endblock content %}
+        </div>
+    </div>
    </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

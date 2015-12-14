@@ -16,9 +16,11 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from .views import HomeView
+from .views import HomeView, IndividualDashboardView, TeamDashboardView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^(?P<pk>[0-9]+)/individual$', IndividualDashboardView.as_view(), name='individual'),
+    url(r'^(?P<pk>[0-9]+)/team$', TeamDashboardView.as_view(), name='team'),
     url(r'^$', HomeView.as_view(), name='home'),
 ]
