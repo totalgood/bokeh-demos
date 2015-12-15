@@ -15,8 +15,12 @@ class UserAdmin(BaseUserAdmin):
     inlines = (EmployeeInline, )
 
 
+class HappinessAdmin(admin.ModelAdmin):
+    list_filter = ('employee', )
+    list_display = ('employee', 'date', 'happiness')
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Team)
 admin.site.register(Employee)
-admin.site.register(Happiness)
+admin.site.register(Happiness, HappinessAdmin)
