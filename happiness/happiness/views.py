@@ -30,7 +30,7 @@ class IndividualDashboardView(ContextMixin, DetailView):
     context_object_name = 'user'
 
     def get_bokeh_script(self):
-        bokeh_session = pull_session(url='ws://localhost:5006/individual/ws')
+        bokeh_session = pull_session(session_id=None, url='ws://localhost:5006/individual/ws')
         plot_source = bokeh_session.document.get_model_by_name('source')
         plot_source.data = self.get_user_data()
         script = autoload_server(None, app_path='/individual', session_id=bokeh_session.id)
