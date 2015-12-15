@@ -1,5 +1,3 @@
-import numpy as np
-
 from bokeh.client import pull_session
 from bokeh.embed import autoload_server
 
@@ -31,8 +29,8 @@ class IndividualDashboardView(ContextMixin, DetailView):
 
     def get_bokeh_script(self):
         bokeh_session = pull_session(session_id=None, url='ws://localhost:5006/individual/ws')
-        plot_source = bokeh_session.document.get_model_by_name('source')
-        plot_source.data = self.get_user_data()
+        source = bokeh_session.document.get_model_by_name('employee_pk_source')
+        source.data = dict(employee_pk=[self.object.employee.pk])
         script = autoload_server(None, app_path='/individual', session_id=bokeh_session.id)
         return script
 
@@ -40,19 +38,6 @@ class IndividualDashboardView(ContextMixin, DetailView):
         context = super(IndividualDashboardView, self).get_context_data(*args, **kwargs)
         context.update(dashboard='individual', script=self.get_bokeh_script())
         return context
-
-    def get_user_data(self):
-        user = self.object
-        if user.employee:
-            h_set = user.employee.happiness_set.all()
-            dates = h_set.values_list('date', flat=True)
-            x = np.array(dates)
-            happinesses = h_set.values_list('happiness', flat=True)
-            y = np.array(happinesses)
-        else:
-            x = []
-            y = []
-        return dict(x=x, y=y)
 
 
 class TeamDashboardView(ContextMixin, DetailView):
