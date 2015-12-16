@@ -15,7 +15,6 @@ from happiness.models import Employee
 
 document = curdoc()
 
-
 start_date = date(2015, 6, 1)
 end_date = date(2015, 8, 31)
 
@@ -35,21 +34,15 @@ source = ColumnDataSource(data=dict(x=[], y=[]))
 plot.add_glyph(source, Line(x='x', y='y', line_width=3, line_alpha=0.6, line_color='magenta', line_cap='round'))
 
 
-def get_user_data(employee):
-    h_set = employee.happiness_set.all()
-    dates = h_set.values_list('date', flat=True)
-    x = np.array(dates)
-    happinesses = h_set.values_list('happiness', flat=True)
-    y = np.array(happinesses)
-    return dict(x=x, y=y)
-
-
 def update_data():
     # This is gross - see https://github.com/bokeh/bokeh/issues/3349
     employee_pk = document.get_model_by_name('employee_pk_source').data['employee_pk'][0]
     try:
         employee = Employee.objects.get(pk=employee_pk)
-        new_data = get_user_data(employee)
+        new_data = dict(
+            x=employee.get_happiness_dates(start_date, end_date),
+            y=employee.get_happiness_values(start_date, end_date)
+        )
         # I want to only do this update if new_data is different, but can't find out a clean way
         source.data = new_data
     except Employee.DoesNotExist:

@@ -1,3 +1,5 @@
+import numpy as np
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -20,6 +22,16 @@ class Employee(models.Model):
     @property
     def teams_list(self):
         return ', '.join([team.name for team in self.teams.all()])
+
+    def get_happiness_dates(self, start_date, end_date):
+        h_set = self.happiness_set.filter(date__gte=start_date, date__lte=end_date)
+        dates = h_set.values_list('date', flat=True)
+        return np.array(dates)
+
+    def get_happiness_values(self, start_date, end_date):
+        h_set = self.happiness_set.filter(date__gte=start_date, date__lte=end_date)
+        happinesses = h_set.values_list('happiness', flat=True)
+        return np.array(happinesses)
 
 
 class Happiness(models.Model):
