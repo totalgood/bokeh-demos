@@ -47,7 +47,9 @@ def update_data():
     except Employee.DoesNotExist:
         source.data = dict(x=[], y=[])
     except AppRegistryNotReady:
-        # This sets up django the first time around
+        # This sets up django the first time around - would be cool if it could
+        # just be in some "setup" script that was run just once as part of
+        # `bokeh serve` command line
         print('Setting up django')
         import django
         django.setup()
