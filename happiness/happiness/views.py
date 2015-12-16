@@ -29,8 +29,12 @@ class IndividualDashboardView(ContextMixin, DetailView):
 
     def get_bokeh_script(self):
         bokeh_session = pull_session(session_id=None, url='ws://localhost:5006/individual/ws')
-        source = bokeh_session.document.get_model_by_name('employee_pk_source')
-        source.data = dict(employee_pk=[self.object.employee.pk])
+        # We want to make this less cumbersome see https://github.com/bokeh/bokeh/issues/3349
+        employee_source = bokeh_session.document.get_model_by_name('employee_pk_source')
+        if hasattr(self.object, 'employee'):
+            employee_source.data = dict(employee_pk=[self.object.employee.pk])
+        else:
+            employee_source.data = dict(employee_pk=[-1])
         script = autoload_server(None, app_path='/individual', session_id=bokeh_session.id)
         return script
 
