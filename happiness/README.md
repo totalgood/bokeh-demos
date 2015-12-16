@@ -28,7 +28,7 @@ This setup ensures that users only see the data they're allowed to.
 
 Then in one terminal, start bokeh server
 
-  $ bokeh serve viz/individual.py  # viz/teams.py
+  $ ./bokeh.sh
 
 And in a second terminal, start django
   

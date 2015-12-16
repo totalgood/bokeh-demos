@@ -10,12 +10,11 @@ from bokeh.models import (
     Plot,
     Range1d,
 )
+from django.core.exceptions import AppRegistryNotReady
 from happiness.models import Employee
 
-import django
-django.setup()
-
 document = curdoc()
+
 
 start_date = date(2015, 6, 1)
 end_date = date(2015, 8, 31)
@@ -33,7 +32,7 @@ plot.add_layout(DatetimeAxis(axis_label=None), 'below')
 
 employee_pk_source = ColumnDataSource(data=dict(employee_pk=[]), name='employee_pk_source')
 source = ColumnDataSource(data=dict(x=[], y=[]))
-plot.add_glyph(source, Line(x='x', y='y', line_width=3, line_alpha=0.6, line_color='magenta'))
+plot.add_glyph(source, Line(x='x', y='y', line_width=3, line_alpha=0.6, line_color='magenta', line_cap='round'))
 
 
 def get_user_data(employee):
@@ -46,13 +45,21 @@ def get_user_data(employee):
 
 
 def update_data():
-    employee_pk = document.get_model_by_name('employee_pk_source').data['employee_pk'][0]  # This is gross!
+    # This is gross - see https://github.com/bokeh/bokeh/issues/3349
+    employee_pk = document.get_model_by_name('employee_pk_source').data['employee_pk'][0]
     try:
         employee = Employee.objects.get(pk=employee_pk)
-        source.data = get_user_data(employee)
+        new_data = get_user_data(employee)
+        # I want to only do this update if new_data is different, but can't find out a clean way
+        source.data = new_data
     except Employee.DoesNotExist:
-        pass
+        source.data = dict(x=[], y=[])
+    except AppRegistryNotReady:
+        # This sets up django the first time around
+        print('Setting up django')
+        import django
+        django.setup()
 
 document.add_root(plot)
 document.add_root(employee_pk_source)
-document.add_periodic_callback(update_data, 2000)
+document.add_periodic_callback(update_data, 200)
