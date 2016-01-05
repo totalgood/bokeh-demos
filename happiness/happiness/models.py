@@ -1,6 +1,7 @@
 import numpy as np
 
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
 
 
@@ -40,6 +41,9 @@ class Happiness(models.Model):
     happiness = models.DecimalField(decimal_places=0, max_digits=1)
 
     unique_together = (('employee', 'date'),)
+
+    def get_absolute_url(self):
+        return reverse('individual', kwargs={'pk': self.employee.user.pk})
 
     def __str__(self):
         return '%s %s %s' % (self.employee.user.first_name, self.happiness, self.date)

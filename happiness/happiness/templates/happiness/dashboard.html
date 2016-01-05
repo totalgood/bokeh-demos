@@ -7,7 +7,9 @@
   <li role="presentation" {% if dashboard == "team" %}class="active"{% endif %}><a href="{% url 'team' user.pk %}">Team</a></li>
 </ul>
 
+<div class="dashboard">
 {% block dashboard %}
 {% endblock dashboard %}
+</div>
 
 {% endblock content %}

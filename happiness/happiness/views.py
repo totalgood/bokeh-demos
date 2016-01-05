@@ -1,11 +1,14 @@
+import datetime
 from bokeh.client import pull_session
 from bokeh.embed import autoload_server
 
 from django.contrib.auth.models import User
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 
-from .models import Team
+from .models import Team, Happiness, Employee
+from .forms import HappinessForm
 
 
 class ContextMixin(object):
@@ -28,7 +31,7 @@ class IndividualDashboardView(ContextMixin, DetailView):
     context_object_name = 'user'
 
     def get_bokeh_script(self):
-        bokeh_session = pull_session(session_id=None, url='ws://localhost:5006/individual/ws')
+        bokeh_session = pull_session(session_id=None, url='http://localhost:5006/individual/')
         # We want to make this less cumbersome see https://github.com/bokeh/bokeh/issues/3349
         employee_source = bokeh_session.document.get_model_by_name('employee_pk_source')
         if hasattr(self.object, 'employee'):
@@ -40,7 +43,12 @@ class IndividualDashboardView(ContextMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(IndividualDashboardView, self).get_context_data(*args, **kwargs)
-        context.update(dashboard='individual', script=self.get_bokeh_script())
+        happiness = Happiness(employee=self.object.employee, date=datetime.date.today())
+        context.update(
+            dashboard='individual',
+            script=self.get_bokeh_script(),
+            form=HappinessForm(instance=happiness)
+        )
         return context
 
 
@@ -52,4 +60,26 @@ class TeamDashboardView(ContextMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(TeamDashboardView, self).get_context_data(*args, **kwargs)
         context.update(dashboard='team')
+        return context
+
+
+#################### Happiness Views
+
+class AddHappinessView(CreateView):
+    model = Happiness
+    fields = ('date', 'happiness')
+    template_name = 'happiness/add_happiness.html'
+
+    def dispatch(self, *args, **kwargs):
+        self.user_pk = kwargs.get('pk')
+        return super(AddHappinessView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        user = User.objects.get(pk=self.user_pk)
+        form.instance.employee = user.employee
+        return super(AddHappinessView, self).form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddHappinessView, self).get_context_data(*args, **kwargs)
+        context.update(user_pk=self.user_pk)
         return context

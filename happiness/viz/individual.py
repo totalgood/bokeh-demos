@@ -23,7 +23,7 @@ plot = Plot(
     plot_height=400, plot_width=800,
     toolbar_location=None, responsive=True,
     x_range=x_range, y_range=y_range,
-    outline_line_color=None,
+    outline_line_color=None, min_border_top=10
 )
 plot.add_layout(LinearAxis(), 'left')
 plot.add_layout(DatetimeAxis(axis_label=None), 'below')
