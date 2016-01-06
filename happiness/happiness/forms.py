@@ -10,6 +10,8 @@ class HappinessForm(forms.ModelForm):
         for field in self.fields.keys():
             # Add bootstrap class
             self.fields[field].widget.attrs['class'] = 'form-control'
+        self.fields['happiness'].widget.attrs['min'] = 0
+        self.fields['happiness'].widget.attrs['max'] = 9
 
     class Meta:
         model = Happiness

@@ -1,30 +1,34 @@
 from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource
+from bokeh.palettes import Spectral9
 from django.core.exceptions import AppRegistryNotReady
 from happiness.models import Employee
 
 from viz.utils import make_plot, setup_django
 
 document = curdoc()
-
-# This source just holds the employee_id it doesn't which is then used to get the data for the plot.
-# There will be a cleaner way of doing this in the future - see https://github.com/bokeh/bokeh/issues/3349
 employee_pk_source = ColumnDataSource(data=dict(employee_pk=[]), name='employee_pk_source')
 
-source = ColumnDataSource(data=dict(x=[], y=[]))  # This is the empty data source that will drive the plot
+source = ColumnDataSource(data=dict(xs=[], ys=[], colors=[]))
+
 plot = make_plot()
-plot.line(x='x', y='y', line_width=1, line_alpha=0.6, line_color='magenta', line_cap='round', source=source)
+plot.multi_line(xs='xs', ys='ys', line_width=1, line_alpha=0.6, line_color='colors', line_cap='round', source=source)
 
 
 def update_data():
     employee_pk = document.get_model_by_name('employee_pk_source').data['employee_pk'][0]
     try:
         employee = Employee.objects.get(pk=employee_pk)
-        dates, happiness = employee.get_dates_happiness()
-        new_data = dict(x=dates, y=happiness)
+        teams = employee.teams.all()
+        new_data = dict(xs=[], ys=[], colors=[])
+        for i, team in enumerate(teams):
+            dates, happiness = team.get_team_dates_happiness()
+            new_data['xs'].append(dates)
+            new_data['ys'].append(happiness)
+            new_data['colors'].append(Spectral9[i])
         source.data = new_data
     except Employee.DoesNotExist:
-        source.data = dict(x=[], y=[])
+        source.data = dict(xs=[], ys=[], colors=[])
     except AppRegistryNotReady:
         setup_django()
 

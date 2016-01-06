@@ -43,7 +43,7 @@ class IndividualDashboardView(ContextMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(IndividualDashboardView, self).get_context_data(*args, **kwargs)
-        happiness = Happiness(employee=self.object.employee, date=datetime.date.today())
+        happiness = Happiness(date=datetime.date.today())
         context.update(
             dashboard='individual',
             script=self.get_bokeh_script(),
@@ -57,9 +57,22 @@ class TeamDashboardView(ContextMixin, DetailView):
     model = User
     context_object_name = 'user'
 
+    def get_bokeh_script(self):
+        bokeh_session = pull_session(session_id=None, url='http://localhost:5006/team/')
+        employee_source = bokeh_session.document.get_model_by_name('employee_pk_source')
+        if hasattr(self.object, 'employee'):
+            employee_source.data = dict(employee_pk=[self.object.employee.pk])
+        else:
+            employee_source.data = dict(employee_pk=[-1])
+        script = autoload_server(None, app_path='/team', session_id=bokeh_session.id)
+        return script
+
     def get_context_data(self, *args, **kwargs):
         context = super(TeamDashboardView, self).get_context_data(*args, **kwargs)
-        context.update(dashboard='team')
+        context.update(
+            dashboard='team',
+            script=self.get_bokeh_script(),
+        )
         return context
 
 
