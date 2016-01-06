@@ -81,5 +81,5 @@ class AddHappinessView(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(AddHappinessView, self).get_context_data(*args, **kwargs)
-        context.update(user_pk=self.user_pk)
+        context.update(user=User.objects.get(pk=self.user_pk))
         return context

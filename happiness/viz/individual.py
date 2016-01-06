@@ -1,55 +1,46 @@
-from datetime import date
-
 from bokeh.io import curdoc
 from bokeh.models import (
     ColumnDataSource,
-    DatetimeAxis,
     Line,
-    LinearAxis,
-    Plot,
     Range1d,
 )
+from bokeh.plotting import Figure
 from django.core.exceptions import AppRegistryNotReady
 from happiness.models import Employee
 
 document = curdoc()
-
-start_date = date(2015, 6, 1)
-end_date = date(2015, 8, 31)
-
-x_range = Range1d(start_date, end_date)
-y_range = Range1d(0, 10)
-plot = Plot(
-    plot_height=400, plot_width=800,
-    toolbar_location=None, responsive=True,
-    x_range=x_range, y_range=y_range,
-    outline_line_color=None, min_border_top=10
-)
-plot.add_layout(LinearAxis(), 'left')
-plot.add_layout(DatetimeAxis(axis_label=None), 'below')
-
 employee_pk_source = ColumnDataSource(data=dict(employee_pk=[]), name='employee_pk_source')
+
+plot = Figure(
+    plot_height=400,
+    plot_width=800,
+    responsive=True,
+    tools="xpan,xwheel_zoom,xbox_zoom,reset",
+    x_axis_type='datetime'
+)
+plot.x_range.follow = "end"
+plot.x_range.follow_interval = 120 * 24 * 60 * 60 * 1000
+plot.x_range.range_padding = 0
+plot.y_range = Range1d(0, 10)
+
 source = ColumnDataSource(data=dict(x=[], y=[]))
-plot.add_glyph(source, Line(x='x', y='y', line_width=3, line_alpha=0.6, line_color='magenta', line_cap='round'))
+plot.add_glyph(source, Line(x='x', y='y', line_width=1, line_alpha=0.6, line_color='magenta', line_cap='round'))
 
 
 def update_data():
-    # This is gross - see https://github.com/bokeh/bokeh/issues/3349
+    # This could be better - see https://github.com/bokeh/bokeh/issues/3349
     employee_pk = document.get_model_by_name('employee_pk_source').data['employee_pk'][0]
     try:
         employee = Employee.objects.get(pk=employee_pk)
         new_data = dict(
-            x=employee.get_happiness_dates(start_date, end_date),
-            y=employee.get_happiness_values(start_date, end_date)
+            x=employee.get_happiness_dates(),
+            y=employee.get_happiness_values()
         )
-        # I want to only do this update if new_data is different, but can't find out a clean way
+        # Would like a way to do this update if new_data is different.
         source.data = new_data
     except Employee.DoesNotExist:
         source.data = dict(x=[], y=[])
     except AppRegistryNotReady:
-        # This sets up django the first time around - would be cool if it could
-        # just be in some "setup" script that was run just once as part of
-        # `bokeh serve` command line
         print('Setting up django')
         import django
         django.setup()
