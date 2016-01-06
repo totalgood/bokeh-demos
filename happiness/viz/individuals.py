@@ -19,7 +19,9 @@ all_employees = list(Employee.objects.all())
 for employee in all_employees:
     sources[employee.pk] = ColumnDataSource(data=dict(x=[], y=[], line_color=[]))
     line = plot.line(x='x', y='y', line_width=2, line_cap='round', source=sources[employee.pk])
-    renderers[employee.pk] = line
+    renderers[employee.pk] = {}
+    renderers[employee.pk]['renderer'] = line
+    renderers[employee.pk]['name'] = employee.user.first_name
 plot.add_layout(legend)
 
 
@@ -33,10 +35,16 @@ def update_data():
             dates, happiness = employee.get_dates_happiness()
             new_data = dict(x=dates, y=happiness)
             sources[employee.pk].data = new_data
-            line = renderers[employee.pk]
-            line.line_color = Spectral9[i]
-            legends[employee.pk] = line
-        legend.legends = [(k, [v]) for k, v in legends.items()]
+            line = renderers[employee.pk]['renderer']
+            line.glyph.line_color = Spectral9[i]
+
+            # Update the legend
+            l = {}
+            l['name'] = renderers[employee.pk]['name']
+            l['renderers'] = [line]
+            legends[employee.pk] = l
+
+        legend.legends = [(l['name'], l['renderers']) for _, l in legends.items()]
 
     except User.DoesNotExist:
         pass
