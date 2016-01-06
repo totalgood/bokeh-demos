@@ -1,0 +1,20 @@
+{% extends 'happiness/dashboard.html' %}
+
+{% block dashboard %}
+
+{% if user.employee %}
+  <div class="panel panel-default">
+    <div class="panel-heading">Your team's average happiness chart</div>
+    <div class="panel-body plot">{{ script|safe }}</div>
+  </div>
+{% endif %}
+
+
+{% if user.team.manager == user %}
+  <div class="panel panel-default">
+    <div class="panel-heading">Happiness chart for all the teams you manage</div>
+    <div class="panel_body plot"</div>
+  </div>
+{% endif %}
+
+{% endblock dashboard %}
