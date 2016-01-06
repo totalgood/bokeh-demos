@@ -24,9 +24,10 @@ def update_data():
         new_data = dict(x=dates, y=happiness)
         source.data = new_data
     except Employee.DoesNotExist:
-        source.data = dict(x=[], y=[])
+        pass
     except AppRegistryNotReady:
         setup_django()
+
 
 def update_data_once():
     update_data()

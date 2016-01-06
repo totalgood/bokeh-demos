@@ -1,5 +1,5 @@
 from bokeh.plotting import Figure
-from bokeh.models import Range1d
+from bokeh.models import Range1d, Legend
 
 
 def make_plot():
@@ -13,8 +13,17 @@ def make_plot():
     plot.x_range.follow = "end"
     plot.x_range.follow_interval = 120 * 24 * 60 * 60 * 1000
     plot.x_range.range_padding = 0
-    plot.y_range = Range1d(0, 9)
+    plot.y_range = Range1d(0, 12)
     return plot
+
+
+def make_legend():
+    return Legend(
+        legends=[],
+        location='top_right',
+        border_line_color=None,
+        background_fill_alpha=0.7
+    )
 
 
 def setup_django():
