@@ -27,7 +27,6 @@ def update_data():
     try:
         employee = Employee.objects.get(pk=employee_pk)
         teams = employee.teams.all()
-        new_data = dict(x=[], y=[], colors=[])
         legends = {}
         for team in teams:
             dates, happiness = team.get_team_dates_happiness()

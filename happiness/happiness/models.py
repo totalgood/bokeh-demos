@@ -7,7 +7,7 @@ from django.db.models import Avg
 
 
 class Team(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     manager = models.OneToOneField(User)
 
     def __str__(self):
