@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 
-from .models import Team, Happiness, Employee
+from .models import Team, Happiness
 from .forms import HappinessForm
 
 
@@ -20,6 +20,15 @@ class ContextMixin(object):
         context.update(all_users=users, all_teams=teams)
         return context
 
+    def get_bokeh_script(self, suffix):
+        assert hasattr(self, 'object')
+        bokeh_session = pull_session(session_id=None, url='http://localhost:5006/%s/' % suffix)
+        # We want to make this less cumbersome see https://github.com/bokeh/bokeh/issues/3349
+        user_source = bokeh_session.document.get_model_by_name('user_pk_source')
+        user_source.data = dict(user_pk=[self.object.pk])
+        script = autoload_server(None, app_path='/%s' % suffix, session_id=bokeh_session.id)
+        return script
+
 
 class HomeView(ContextMixin, TemplateView):
     template_name = 'happiness/home.html'
@@ -30,25 +39,16 @@ class IndividualDashboardView(ContextMixin, DetailView):
     model = User
     context_object_name = 'user'
 
-    def get_bokeh_script(self):
-        bokeh_session = pull_session(session_id=None, url='http://localhost:5006/individual/')
-        # We want to make this less cumbersome see https://github.com/bokeh/bokeh/issues/3349
-        employee_source = bokeh_session.document.get_model_by_name('employee_pk_source')
-        if hasattr(self.object, 'employee'):
-            employee_source.data = dict(employee_pk=[self.object.employee.pk])
-        else:
-            employee_source.data = dict(employee_pk=[-1])
-        script = autoload_server(None, app_path='/individual', session_id=bokeh_session.id)
-        return script
-
     def get_context_data(self, *args, **kwargs):
         context = super(IndividualDashboardView, self).get_context_data(*args, **kwargs)
         happiness = Happiness(date=datetime.date.today())
         context.update(
             dashboard='individual',
-            script=self.get_bokeh_script(),
+            individual_script=self.get_bokeh_script('individual'),
             form=HappinessForm(instance=happiness)
         )
+        if hasattr(self.object, 'team'):
+            context.update(individuals_script=self.get_bokeh_script('individuals'))
         return context
 
 
@@ -57,22 +57,14 @@ class TeamDashboardView(ContextMixin, DetailView):
     model = User
     context_object_name = 'user'
 
-    def get_bokeh_script(self):
-        bokeh_session = pull_session(session_id=None, url='http://localhost:5006/team/')
-        employee_source = bokeh_session.document.get_model_by_name('employee_pk_source')
-        if hasattr(self.object, 'employee'):
-            employee_source.data = dict(employee_pk=[self.object.employee.pk])
-        else:
-            employee_source.data = dict(employee_pk=[-1])
-        script = autoload_server(None, app_path='/team', session_id=bokeh_session.id)
-        return script
-
     def get_context_data(self, *args, **kwargs):
         context = super(TeamDashboardView, self).get_context_data(*args, **kwargs)
         context.update(
             dashboard='team',
-            script=self.get_bokeh_script(),
+            team_script=self.get_bokeh_script('team'),
         )
+        if hasattr(self.object, 'team'):
+            context.update(teams_script=self.get_bokeh_script('teams'))
         return context
 
 
