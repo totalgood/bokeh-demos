@@ -38,6 +38,8 @@ def update_data():
 
     except User.DoesNotExist:
         pass
+    except User.RelatedObjectDoesNotExist:
+        pass
     except AppRegistryNotReady:
         setup_django()
 

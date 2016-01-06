@@ -61,8 +61,10 @@ class TeamDashboardView(ContextMixin, DetailView):
         context = super(TeamDashboardView, self).get_context_data(*args, **kwargs)
         context.update(
             dashboard='team',
-            script=self.get_bokeh_script('team'),
+            team_script=self.get_bokeh_script('team'),
         )
+        if hasattr(self.object, 'team'):
+            context.update(teams_script=self.get_bokeh_script('teams'))
         return context
 
 
