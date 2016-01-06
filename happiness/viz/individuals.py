@@ -1,10 +1,10 @@
 from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource
-from bokeh.palettes import Spectral4
+from bokeh.palettes import Spectral9
 from django.core.exceptions import AppRegistryNotReady
 from django.contrib.auth.models import User
 
-from happiness.models import Team
+from happiness.models import Employee
 from viz.utils import make_plot, make_legend, setup_django
 
 document = curdoc()
@@ -15,25 +15,27 @@ renderers = {}
 
 plot = make_plot()
 legend = make_legend()
-team_list = list(Team.objects.all())
-for i, team in enumerate(team_list):
-    sources[team.name] = ColumnDataSource(data=dict(x=[], y=[]))
-    line = plot.line(x='x', y='y', line_width=2, line_color=Spectral4[i], line_cap='round', source=sources[team.name])
-    renderers[team.name] = line
+all_employees = list(Employee.objects.all())
+for employee in all_employees:
+    sources[employee.pk] = ColumnDataSource(data=dict(x=[], y=[], line_color=[]))
+    line = plot.line(x='x', y='y', line_width=2, line_cap='round', source=sources[employee.pk])
+    renderers[employee.pk] = line
 plot.add_layout(legend)
 
 
 def update_data():
     user_pk = document.get_model_by_name('user_pk_source').data['user_pk'][0]
     try:
-        employee = User.objects.get(pk=user_pk).employee
-        teams = employee.teams.all()
+        manager = User.objects.get(pk=user_pk)
+        employees = manager.team.employee_set.all()
         legends = {}
-        for team in teams:
-            dates, happiness = team.get_team_dates_happiness()
+        for i, employee in enumerate(employees):
+            dates, happiness = employee.get_dates_happiness()
             new_data = dict(x=dates, y=happiness)
-            sources[team.name].data = new_data
-            legends[team.name] = renderers[team.name]
+            sources[employee.pk].data = new_data
+            line = renderers[employee.pk]
+            line.line_color = Spectral9[i]
+            legends[employee.pk] = line
         legend.legends = [(k, [v]) for k, v in legends.items()]
 
     except User.DoesNotExist:

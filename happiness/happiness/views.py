@@ -21,13 +21,11 @@ class ContextMixin(object):
         return context
 
     def get_bokeh_script(self, suffix):
+        assert hasattr(self, 'object')
         bokeh_session = pull_session(session_id=None, url='http://localhost:5006/%s/' % suffix)
         # We want to make this less cumbersome see https://github.com/bokeh/bokeh/issues/3349
-        employee_source = bokeh_session.document.get_model_by_name('employee_pk_source')
-        if hasattr(self.object, 'employee'):
-            employee_source.data = dict(employee_pk=[self.object.employee.pk])
-        else:
-            employee_source.data = dict(employee_pk=[-1])
+        user_source = bokeh_session.document.get_model_by_name('user_pk_source')
+        user_source.data = dict(user_pk=[self.object.pk])
         script = autoload_server(None, app_path='/%s' % suffix, session_id=bokeh_session.id)
         return script
 
@@ -46,9 +44,11 @@ class IndividualDashboardView(ContextMixin, DetailView):
         happiness = Happiness(date=datetime.date.today())
         context.update(
             dashboard='individual',
-            script=self.get_bokeh_script('individual'),
+            individual_script=self.get_bokeh_script('individual'),
             form=HappinessForm(instance=happiness)
         )
+        if hasattr(self.object, 'team'):
+            context.update(individuals_script=self.get_bokeh_script('individuals'))
         return context
 
 

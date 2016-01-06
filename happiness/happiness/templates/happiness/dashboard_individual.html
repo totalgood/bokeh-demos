@@ -9,14 +9,14 @@
 
   <div class="panel panel-default">
     <div class="panel-heading">Your happiness chart</div>
-    <div class="panel-body plot">{{ script|safe }}</div>
+    <div class="panel-body plot">{{ individual_script|safe }}</div>
   </div>
 {% endif %}
 
-{% if user.team.manager == user %}
+{% if user.team %}
   <div class="panel panel-default">
     <div class="panel-heading">Happiness chart for all the individuals you manage</div>
-    <div class="panel_body plot"</div>
+    <div class="panel-body plot">{{ individuals_script|safe }}</div>
   </div>
 {% endif %}
 
