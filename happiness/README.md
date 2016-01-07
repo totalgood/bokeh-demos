@@ -32,4 +32,4 @@ Then in one terminal, start bokeh server
 
 And in a second terminal, start django
   
-  $ ./manage.py runserver
+  $ ./manage.py runserver 8001
