@@ -35,7 +35,11 @@
           <ul class="nav nav-pills nav-stacked">
               <li role="presentation"><a href="{% url 'home' %}">Home</a></li>
             {% for u in all_users %}
-            <li role="presentation" {% if user.pk == u.pk %}class="active"{% endif %}><a href="{% url 'individual' u.id %}">{{ u.first_name }}</a></li>
+              {% if dashboard == "team" %}
+              <li role="presentation" {% if user.pk == u.pk %}class="active"{% endif %}><a href="{% url 'team' u.id %}">{{ u.first_name }} {% if u.team %} (Manager){% endif %}</a></li>
+              {% else %}
+              <li role="presentation" {% if user.pk == u.pk %}class="active"{% endif %}><a href="{% url 'individual' u.id %}">{{ u.first_name }} {% if u.team %} (Manager) {% endif %}</a></li>
+              {% endif %}
             {% endfor %}
           </ul>
         </div>
