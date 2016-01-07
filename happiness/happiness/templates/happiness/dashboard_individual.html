@@ -15,7 +15,7 @@
 
 {% if user.team %}
   <div class="panel panel-default">
-    <div class="panel-heading">Happiness chart for all the individuals you manage</div>
+    <div class="panel-heading">Happiness chart the individuals on the team you manage: {{ user.team.name }}</div>
     <div class="panel-body plot">{{ individuals_script|safe }}</div>
   </div>
 {% endif %}
