@@ -1,11 +1,14 @@
 from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource
 from bokeh.palettes import Spectral4
-from django.core.exceptions import AppRegistryNotReady
-from django.contrib.auth.models import User
 
 from happiness.models import Team
-from viz.utils import make_plot, make_legend, setup_django
+from viz.utils import make_plot, make_legend, get_user, django_setup
+
+if not django_setup:
+    import django
+    django.setup()
+    django_setup = True
 
 document = curdoc()
 
@@ -24,24 +27,21 @@ plot.add_layout(legend)
 
 
 def update_data():
-    user_pk = document.get_model_by_name('user_pk_source').data['user_pk'][0]
-    try:
-        employee = User.objects.get(pk=user_pk).employee
+    user = get_user(document)
+    if user and hasattr(user, 'employee'):
+        employee = user.employee
         teams = employee.teams.all()
         legends = {}
+        new_data = {}
         for team in teams:
             dates, happiness = team.get_team_dates_happiness()
-            new_data = dict(x=dates, y=happiness)
-            sources[team.name].data = new_data
+            new_data[team.name] = dict(x=dates, y=happiness)
             legends[team.name] = renderers[team.name]
-        legend.legends = [(k, [v]) for k, v in legends.items()]
 
-    except User.DoesNotExist:
-        pass
-    except User.RelatedObjectDoesNotExist:
-        pass
-    except AppRegistryNotReady:
-        setup_django()
+        # Update legend before data (seems to render better)
+        legend.legends = [(k, [v]) for k, v in legends.items()]
+        for team in teams:
+            sources[team.name].data = new_data[team.name]
 
 
 def update_data_once():
@@ -49,5 +49,5 @@ def update_data_once():
 
 document.add_root(plot)
 document.add_root(user_pk_source)
-document.add_timeout_callback(update_data_once, 100)
-document.add_periodic_callback(update_data, 2000)
+document.add_timeout_callback(update_data_once, 250)
+document.add_periodic_callback(update_data, 5000)

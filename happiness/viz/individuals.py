@@ -1,12 +1,14 @@
 from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource
 from bokeh.palettes import Spectral9
-from django.core.exceptions import AppRegistryNotReady
-from django.contrib.auth.models import User
 
 from happiness.models import Employee
-from viz.utils import make_plot, make_legend, setup_django
+from viz.utils import make_plot, make_legend, get_user, django_setup
 
+if not django_setup:
+    import django
+    django.setup()
+    django_setup = True
 document = curdoc()
 
 user_pk_source = ColumnDataSource(data=dict(user_pk=[]), name='user_pk_source')
@@ -26,30 +28,27 @@ plot.add_layout(legend)
 
 
 def update_data():
-    user_pk = document.get_model_by_name('user_pk_source').data['user_pk'][0]
-    try:
-        manager = User.objects.get(pk=user_pk)
-        employees = manager.team.employee_set.all()
+    user = get_user(document)
+    if user and hasattr(user, 'team'):
+        employees = user.team.employee_set.all()
         legends = {}
+        new_data = {}
         for i, employee in enumerate(employees):
             dates, happiness = employee.get_dates_happiness()
-            new_data = dict(x=dates, y=happiness)
-            sources[employee.pk].data = new_data
+            new_data[employee.pk] = dict(x=dates, y=happiness)
             line = renderers[employee.pk]['renderer']
             line.glyph.line_color = Spectral9[i]
 
-            # Update the legend
+            # Update the legend info
             l = {}
             l['name'] = renderers[employee.pk]['name']
             l['renderers'] = [line]
             legends[employee.pk] = l
 
+        # Update legend before data (seems to render better)
         legend.legends = [(l['name'], l['renderers']) for _, l in legends.items()]
-
-    except User.DoesNotExist:
-        pass
-    except AppRegistryNotReady:
-        setup_django()
+        for employee in employees:
+            sources[employee.pk].data = new_data[employee.pk]
 
 
 def update_data_once():
@@ -57,5 +56,5 @@ def update_data_once():
 
 document.add_root(plot)
 document.add_root(user_pk_source)
-document.add_timeout_callback(update_data_once, 100)
-document.add_periodic_callback(update_data, 2000)
+document.add_timeout_callback(update_data_once, 250)
+document.add_periodic_callback(update_data, 5000)

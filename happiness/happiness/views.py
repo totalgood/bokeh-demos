@@ -44,9 +44,10 @@ class IndividualDashboardView(ContextMixin, DetailView):
         happiness = Happiness(date=datetime.date.today())
         context.update(
             dashboard='individual',
-            individual_script=self.get_bokeh_script('individual'),
             form=HappinessForm(instance=happiness)
         )
+        if hasattr(self.object, 'employee'):
+            context.update(individual_script=self.get_bokeh_script('individual'))
         if hasattr(self.object, 'team'):
             context.update(individuals_script=self.get_bokeh_script('individuals'))
         return context
@@ -61,8 +62,9 @@ class TeamDashboardView(ContextMixin, DetailView):
         context = super(TeamDashboardView, self).get_context_data(*args, **kwargs)
         context.update(
             dashboard='team',
-            team_script=self.get_bokeh_script('team'),
         )
+        if hasattr(self.object, 'employee'):
+            context.update(team_script=self.get_bokeh_script('team'))
         if hasattr(self.object, 'team'):
             context.update(teams_script=self.get_bokeh_script('teams'))
         return context
