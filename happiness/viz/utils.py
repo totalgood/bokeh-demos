@@ -1,9 +1,9 @@
 from bokeh.plotting import Figure
 from bokeh.models import Range1d, Legend, FixedTicker
-from django.core.exceptions import AppRegistryNotReady
 from django.contrib.auth.models import User
 
 django_setup = False
+
 
 def make_plot():
     plot = Figure(
