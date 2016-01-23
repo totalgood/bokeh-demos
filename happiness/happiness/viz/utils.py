@@ -27,7 +27,7 @@ def make_plot():
     return plot
 
 
-def make_legend(legends=[]):
+def make_legend(legends):
     return Legend(
         legends=legends,
         location='top_right',

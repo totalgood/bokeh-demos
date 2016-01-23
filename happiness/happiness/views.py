@@ -1,37 +1,17 @@
-from contextlib import closing
 import datetime
-
-from bokeh.client import push_session
-from bokeh.document import Document
-from bokeh.embed import autoload_server
 
 from django.contrib.auth.models import User
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 
-from .models import Team, Happiness, UserSession
+from .bokeh_utils import get_bokeh_script
 from .forms import HappinessForm
+from .models import Team, Happiness
 from .viz.individual import make_individual_plot
 from .viz.individuals import make_individuals_plot
 from .viz.team import make_team_plot
 from .viz.teams import make_teams_plot
-
-
-def get_bokeh_script(user, plot, suffix):
-    # Make the document and session
-    document = Document()
-    document.add_root(plot)
-
-    with closing(push_session(document)) as session:
-        # Save the session id to the UserSession
-        user_session = UserSession.objects.create(user=user)
-        setattr(user_session, 'bokeh_session_%s' % suffix, session.id)
-        user_session.save()
-        # Get the script to pass into the template
-        script = autoload_server(None, session_id=session.id)
-
-    return script
 
 
 class ContextMixin(object):

@@ -1,21 +1,15 @@
-from contextlib import closing
-
-from bokeh.client import pull_session
 from bokeh.models import ColumnDataSource
 from bokeh.palettes import Spectral9
 
 from .utils import make_plot, make_legend
 
 
-def update_individuals_data(user, bokeh_session_id):
-    with closing(pull_session(session_id=bokeh_session_id)) as session:
-        employees = user.team.employee_set.all()
-        for employee in employees:
-            dates, happiness = employee.get_dates_happiness()
-            source = session.document.select_one(
-                {'name': str(employee.pk)}
-            )
-            source.data = dict(x=dates, y=happiness)
+def update_individuals_data(user, session):
+    employees = user.team.employee_set.all()
+    for employee in employees:
+        dates, happiness = employee.get_dates_happiness()
+        source = session.document.select_one({'name': str(employee.pk)})
+        source.data = dict(x=dates, y=happiness)
 
 
 def make_individuals_plot(user):
