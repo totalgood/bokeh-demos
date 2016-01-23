@@ -5,9 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Avg
 
-from .viz.individuals import update_individuals_data
-from .viz.team import update_team_data
-from .viz.teams import update_teams_data
+from .bokeh_utils import update_bokeh_sessions
 
 
 class Team(models.Model):
@@ -59,28 +57,15 @@ class Happiness(models.Model):
 
     def save(self, *args, **kwargs):
         super(Happiness, self).save(*args, **kwargs)
-
-        # When a new value of Happiness is saved, we update all the data for the bokeh sessions.
+        # When a new value of Happiness is saved.
+        # We update all the data for the bokeh sessions.
         # This is not optimized. Things that could be improved:
         #
         # - Send this off to an external process so that the user gets a quicker response
         # - Only update for users affected by this data (only get affected UserSessions)
-
-        for us in UserSession.objects.all():
-            # Process "individuals" plots
-            if us.bokeh_session_individuals:
-                update_individuals_data(user=us.user, bokeh_session_id=us.bokeh_session_individuals)
-            # Process "team" plots
-            if us.bokeh_session_team:
-                update_team_data(user=us.user, bokeh_session_id=us.bokeh_session_team)
-            # Process "teams" plots
-            if us.bokeh_session_teams:
-                update_teams_data(user=us.user, bokeh_session_id=us.bokeh_session_teams)
+        update_bokeh_sessions(UserSession.objects.all())
 
 
 class UserSession(models.Model):
     user = models.ForeignKey(User)
-    bokeh_session_individual = models.CharField(max_length=64)
-    bokeh_session_individuals = models.CharField(max_length=64)
-    bokeh_session_team = models.CharField(max_length=64)
-    bokeh_session_teams = models.CharField(max_length=64)
+    bokeh_session_id = models.CharField(max_length=64)
