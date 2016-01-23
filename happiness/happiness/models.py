@@ -52,3 +52,11 @@ class Happiness(models.Model):
 
     def __str__(self):
         return '%s %s %s' % (self.employee.user.first_name, self.happiness, self.date)
+
+
+class UserSession(models.Model):
+    user = models.ForeignKey(User)
+    bokeh_session_individual = models.CharField(max_length=64)
+    bokeh_session_individuals = models.CharField(max_length=64)
+    bokeh_session_team = models.CharField(max_length=64)
+    bokeh_session_teams = models.CharField(max_length=64)
