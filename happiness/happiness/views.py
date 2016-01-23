@@ -1,5 +1,6 @@
 import datetime
 from bokeh.client import push_session
+from bokeh.document import Document
 from bokeh.embed import autoload_server
 
 from django.contrib.auth.models import User
@@ -9,7 +10,25 @@ from django.views.generic.detail import DetailView
 
 from .models import Team, Happiness, UserSession
 from .forms import HappinessForm
-from .viz import IndividualPlot, IndividualsPlot, TeamPlot, TeamsPlot
+from .viz.individual import make_individual_plot
+from .viz.individuals import make_individuals_plot
+from .viz.team import make_team_plot
+from .viz.teams import make_teams_plot
+
+
+def get_bokeh_script(user, plot, suffix):
+    # Make the document and session
+    document = Document()
+    document.add_root(plot)
+    bokeh_session = push_session(document)
+    # Save the session id to the database
+    user, _ = UserSession.objects.get_or_create(user=user)
+    setattr(user, 'bokeh_session_%s' % suffix, bokeh_session.id)
+    user.save()
+    # Get the script and close the session
+    script = autoload_server(None, session_id=bokeh_session.id)
+    bokeh_session.close()
+    return script
 
 
 class ContextMixin(object):
@@ -20,15 +39,6 @@ class ContextMixin(object):
         teams = Team.objects.all().order_by('name')
         context.update(all_users=users, all_teams=teams)
         return context
-
-    def get_bokeh_script(self, document, suffix):
-        bokeh_session = push_session(document)
-        script = autoload_server(None, session_id=bokeh_session.id)
-        user, _ = UserSession.objects.get_or_create(user=self.object)
-        setattr(user, 'bokeh_session_%s' % suffix, bokeh_session.id)
-        user.save()
-        bokeh_session.close()
-        return script
 
 
 class HomeView(ContextMixin, TemplateView):
@@ -48,11 +58,13 @@ class IndividualDashboardView(ContextMixin, DetailView):
             form=HappinessForm(instance=happiness)
         )
         if hasattr(self.object, 'employee'):
-            individual = IndividualPlot(user=self.object)
-            context.update(individual_script=self.get_bokeh_script(individual.document, 'individual'))
+            plot = make_individual_plot(user=self.object)
+            individual_script = get_bokeh_script(user=self.object, plot=plot, suffix='individual')
+            context.update(individual_script=individual_script)
         if hasattr(self.object, 'team'):
-            individuals = IndividualsPlot(user=self.object)
-            context.update(individuals_script=self.get_bokeh_script(individuals.document, 'individuals'))
+            plot = make_individuals_plot(user=self.object)
+            individuals_script = get_bokeh_script(user=self.object, plot=plot, suffix='individuals')
+            context.update(individuals_script=individuals_script)
         return context
 
 
@@ -63,15 +75,15 @@ class TeamDashboardView(ContextMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(TeamDashboardView, self).get_context_data(*args, **kwargs)
-        context.update(
-            dashboard='team',
-        )
+        context.update(dashboard='team')
         if hasattr(self.object, 'employee'):
-            team = TeamPlot(user=self.object)
-            context.update(team_script=self.get_bokeh_script(team.document, 'team'))
+            plot = make_team_plot(user=self.object)
+            team_script = get_bokeh_script(user=self.object, plot=plot, suffix='team')
+            context.update(team_script=team_script)
         if hasattr(self.object, 'team'):
-            teams = TeamsPlot(user=self.object)
-            context.update(teams_script=self.get_bokeh_script(teams.document, 'teams'))
+            plot = make_teams_plot(user=self.object)
+            teams_script = get_bokeh_script(user=self.object, plot=plot, suffix='teams')
+            context.update(teams_script=teams_script)
         return context
 
 

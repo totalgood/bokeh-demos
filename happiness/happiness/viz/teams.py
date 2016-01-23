@@ -1,34 +1,24 @@
-from bokeh.document import Document
+from bokeh.client import pull_session
 from bokeh.models import ColumnDataSource
 from bokeh.palettes import Spectral4
 
 from .utils import make_plot
 
 
-class TeamsPlot(object):
+def update_teams_data(user, bokeh_session_id):
+    session = pull_session(session_id=bokeh_session_id)
+    dates, happiness = user.team.get_team_dates_happiness()
+    source = session.document.select_one({'type': ColumnDataSource})
+    source.data = dict(x=dates, y=happiness)
 
-    def __init__(self, user):
-        self.user = user
-        self.source = ColumnDataSource(data=dict(x=[], y=[]))
-        self.update_data()
-        self.document = Document()
-        self.document.add_root(self.make_teams_plot())
 
-    def make_teams_plot(self):
-        plot = make_plot()
-        plot.plot_height = 200
-        plot.y_range.end = 9
-        plot.line(
-            x='x', y='y',
-            line_width=2, line_color=Spectral4[3], line_cap='round',
-            source=self.source
-        )
-        return plot
-
-    def update_data(self):
-        user = self.user
-        if user and hasattr(user, 'team'):
-            team = user.team
-            dates, happiness = team.get_team_dates_happiness()
-            new_data = dict(x=dates, y=happiness)
-            self.source.data = new_data
+def make_teams_plot(user):
+    plot = make_plot()
+    plot.plot_height = 200
+    plot.y_range.end = 9
+    dates, happiness = user.team.get_team_dates_happiness()
+    plot.line(
+        x=dates, y=happiness,
+        line_width=2, line_color=Spectral4[3], line_cap='round',
+    )
+    return plot
