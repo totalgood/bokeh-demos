@@ -1,4 +1,6 @@
+from contextlib import closing
 import datetime
+
 from bokeh.client import push_session
 from bokeh.document import Document
 from bokeh.embed import autoload_server
@@ -20,14 +22,15 @@ def get_bokeh_script(user, plot, suffix):
     # Make the document and session
     document = Document()
     document.add_root(plot)
-    bokeh_session = push_session(document)
-    # Save the session id to the database
-    user, _ = UserSession.objects.get_or_create(user=user)
-    setattr(user, 'bokeh_session_%s' % suffix, bokeh_session.id)
-    user.save()
-    # Get the script and close the session
-    script = autoload_server(None, session_id=bokeh_session.id)
-    bokeh_session.close()
+
+    with closing(push_session(document)) as session:
+        # Save the session id to the UserSession
+        user_session = UserSession.objects.create(user=user)
+        setattr(user_session, 'bokeh_session_%s' % suffix, session.id)
+        user_session.save()
+        # Get the script to pass into the template
+        script = autoload_server(None, session_id=session.id)
+
     return script
 
 
