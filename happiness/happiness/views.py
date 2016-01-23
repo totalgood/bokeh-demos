@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 
-from .models import Team, Happiness
+from .models import Team, Happiness, UserSession
 from .forms import HappinessForm
 from .viz import IndividualPlot, IndividualsPlot, TeamPlot, TeamsPlot
 
@@ -21,9 +21,12 @@ class ContextMixin(object):
         context.update(all_users=users, all_teams=teams)
         return context
 
-    def get_bokeh_script(self, document):
+    def get_bokeh_script(self, document, suffix):
         bokeh_session = push_session(document)
         script = autoload_server(None, session_id=bokeh_session.id)
+        user, _ = UserSession.objects.get_or_create(user=self.object)
+        setattr(user, 'bokeh_session_%s' % suffix, bokeh_session.id)
+        user.save()
         bokeh_session.close()
         return script
 
@@ -46,10 +49,10 @@ class IndividualDashboardView(ContextMixin, DetailView):
         )
         if hasattr(self.object, 'employee'):
             individual = IndividualPlot(user=self.object)
-            context.update(individual_script=self.get_bokeh_script(individual.document))
+            context.update(individual_script=self.get_bokeh_script(individual.document, 'individual'))
         if hasattr(self.object, 'team'):
             individuals = IndividualsPlot(user=self.object)
-            context.update(individuals_script=self.get_bokeh_script(individuals.document))
+            context.update(individuals_script=self.get_bokeh_script(individuals.document, 'individuals'))
         return context
 
 
@@ -65,10 +68,10 @@ class TeamDashboardView(ContextMixin, DetailView):
         )
         if hasattr(self.object, 'employee'):
             team = TeamPlot(user=self.object)
-            context.update(team_script=self.get_bokeh_script(team.document))
+            context.update(team_script=self.get_bokeh_script(team.document, 'team'))
         if hasattr(self.object, 'team'):
             teams = TeamsPlot(user=self.object)
-            context.update(teams_script=self.get_bokeh_script(teams.document))
+            context.update(teams_script=self.get_bokeh_script(teams.document, 'teams'))
         return context
 
 
