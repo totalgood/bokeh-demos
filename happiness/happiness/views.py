@@ -1,5 +1,5 @@
 import datetime
-from bokeh.client import pull_session
+from bokeh.client import push_session
 from bokeh.embed import autoload_server
 
 from django.contrib.auth.models import User
@@ -9,6 +9,7 @@ from django.views.generic.detail import DetailView
 
 from .models import Team, Happiness
 from .forms import HappinessForm
+from .viz import IndividualPlot, IndividualsPlot, TeamPlot, TeamsPlot
 
 
 class ContextMixin(object):
@@ -20,13 +21,10 @@ class ContextMixin(object):
         context.update(all_users=users, all_teams=teams)
         return context
 
-    def get_bokeh_script(self, suffix):
-        assert hasattr(self, 'object')
-        bokeh_session = pull_session(session_id=None, url='http://localhost:5006/%s/' % suffix)
-        # We want to make this less cumbersome see https://github.com/bokeh/bokeh/issues/3349
-        user_source = bokeh_session.document.get_model_by_name('user_pk_source')
-        user_source.data = dict(user_pk=[self.object.pk])
-        script = autoload_server(None, app_path='/%s' % suffix, session_id=bokeh_session.id)
+    def get_bokeh_script(self, document):
+        bokeh_session = push_session(document)
+        script = autoload_server(None, session_id=bokeh_session.id)
+        bokeh_session.close()
         return script
 
 
@@ -47,9 +45,11 @@ class IndividualDashboardView(ContextMixin, DetailView):
             form=HappinessForm(instance=happiness)
         )
         if hasattr(self.object, 'employee'):
-            context.update(individual_script=self.get_bokeh_script('individual'))
+            individual = IndividualPlot(user=self.object)
+            context.update(individual_script=self.get_bokeh_script(individual.document))
         if hasattr(self.object, 'team'):
-            context.update(individuals_script=self.get_bokeh_script('individuals'))
+            individuals = IndividualsPlot(user=self.object)
+            context.update(individuals_script=self.get_bokeh_script(individuals.document))
         return context
 
 
@@ -64,9 +64,11 @@ class TeamDashboardView(ContextMixin, DetailView):
             dashboard='team',
         )
         if hasattr(self.object, 'employee'):
-            context.update(team_script=self.get_bokeh_script('team'))
+            team = TeamPlot(user=self.object)
+            context.update(team_script=self.get_bokeh_script(team.document))
         if hasattr(self.object, 'team'):
-            context.update(teams_script=self.get_bokeh_script('teams'))
+            teams = TeamsPlot(user=self.object)
+            context.update(teams_script=self.get_bokeh_script(teams.document))
         return context
 
 
