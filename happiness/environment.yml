@@ -1,0 +1,5 @@
+name: happiness
+dependencies:
+  - bokeh
+  - django
+  - pandas  # This shouldn't be necessary: https://github.com/bokeh/bokeh/issues/3726

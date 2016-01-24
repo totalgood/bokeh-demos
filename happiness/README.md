@@ -18,12 +18,16 @@ Happiness is designed to demonstrate a simple setup of a django (or any other we
 pyramid, etc) with the bokeh server.
 
 The django webapp is used to authenticate users and store their data. The bokeh server is used
-to serve up the plots to users and to keep that data uptodate by pushing down new data if its 
-found in the database. 
+to serve up the plots to users and to keep that data up-to-date by pushing down new data when it
+is added in django. This setup ensures that users only see the data they're allowed to. 
 
-This setup ensures that users only see the data they're allowed to. 
+From inside the happiness directory:
 
-  $ conda create -n happiness --file conda-requirements.txt
+  $ conda env create
+
+This create step only needs to be run once. It uses the environment.yml file to create a new
+conda environment (similar to a virtual env) with the correct packages installed.
+
   $ source activate happiness
 
 Then in one terminal, start bokeh server
