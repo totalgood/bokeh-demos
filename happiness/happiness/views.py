@@ -1,4 +1,4 @@
-import datetime
+from datetime import timedelta
 
 from django.contrib.auth.models import User
 from django.views.generic.base import TemplateView
@@ -35,15 +35,17 @@ class IndividualDashboardView(ContextMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(IndividualDashboardView, self).get_context_data(*args, **kwargs)
-        happiness = Happiness(date=datetime.date.today())
         context.update(
-            dashboard='individual',
-            form=HappinessForm(instance=happiness)
+            dashboard='individual'
         )
         if hasattr(self.object, 'employee'):
             plot = make_individual_plot(user=self.object)
             individual_script = get_bokeh_script(user=self.object, plot=plot, suffix='individual')
-            context.update(individual_script=individual_script)
+            latest_date = self.object.employee.latest_happiness.date
+            context.update(
+                individual_script=individual_script,
+                form=HappinessForm(initial={'date': latest_date + timedelta(days=1)}),
+            )
         if hasattr(self.object, 'team'):
             plot = make_individuals_plot(user=self.object)
             individuals_script = get_bokeh_script(user=self.object, plot=plot, suffix='individuals')
