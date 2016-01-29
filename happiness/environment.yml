@@ -2,4 +2,4 @@ name: happiness
 dependencies:
   - bokeh
   - django
-  - pandas  # This shouldn't be necessary: https://github.com/bokeh/bokeh/issues/3726
+  # - pandas  # Uncomment this line if you are using bokeh < 0.11.1
