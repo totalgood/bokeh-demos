@@ -1,8 +1,5 @@
 from bokeh.plotting import Figure
 from bokeh.models import Range1d, Legend, FixedTicker
-from django.contrib.auth.models import User
-
-django_setup = False
 
 
 def make_plot():
@@ -30,21 +27,10 @@ def make_plot():
     return plot
 
 
-def make_legend():
+def make_legend(legends):
     return Legend(
-        legends=[],
+        legends=legends,
         location='top_right',
         border_line_color=None,
         background_fill_alpha=0.7
     )
-
-
-def get_user(document):
-    try:
-        user_pk = document.get_model_by_name('user_pk_source').data['user_pk'][0]
-        user = User.objects.get(pk=user_pk)
-        return user
-    except IndexError:
-        return None
-    except User.DoesNotExist:
-        return None
