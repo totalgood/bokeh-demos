@@ -10,6 +10,8 @@ from flask import make_response
 
 app = Flask(__name__)
 
+# Note, you can't just change this to whatever you want, if you want
+# static site to just magically work
 SLIDES_LOCATION = "slides.md"
 
 
