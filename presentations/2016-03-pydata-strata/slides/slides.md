@@ -9,9 +9,6 @@ http://github.com/bokeh/bokeh-demos/
 
 <small>March 29th, 2016</small>
 
-Note:
-- Don't worry about the styling, once the content's in place, I'll give it a skin - probably simple and similar to https://birdsarah.github.io/europython-2015-bokeh/static/slides.html#/2 with an extra corner logo
-- I'm thinking we put a link on this home screen to where people can get lots of links and refs for the fist half, and then we put up a link over lunch for getting the tutorial
 
 ---
 
@@ -41,16 +38,27 @@ Note:
 
 ## Bokeh
 
-<img class="slide_image" src="images/gallery-screenshot.png" style="position: absolute; top: 0; right: 0; opacity: 0.2">
+<img class="slide_image" src="images/gallery-screenshot.png" style="position: absolute; top: 0; right: 0;">
 
-- data visualization library
-- web-based, interactive, data-driven
- - no javascript required
-- can handle large-data, streaming-data, dynamic-data
+- data visualization
+- web-based & interactive
+- no javascript required
+- large data
+- streaming data
 
-<br/>
 
-## Growing eco-system
+---
+
+## Core concepts for today
+
+- Overview of Bokeh's functionality
+- Navigating Bokeh's interfaces 
+ - charts, plotting, and probably not models!
+- Bokeh server 
+ - what it is, what it isn't, do I need it
+- Sharing your work 
+ - notebook, standalone files, server 
+- Awareness of the Bokeh ecosystem
 
 ---
 
@@ -62,7 +70,6 @@ Note:
 - User interactions & styling
 - Server interactions
 
-
 ---
 
 ## Bokeh - Ecosystem
@@ -70,18 +77,6 @@ Note:
 - Other language bindings: rbokeh (actively maintained), scala (activeley maintained), julia (not maintained), typescript (coming soon)
 - Datashader - interact with BIG<sup>**</sup> data
 - Write your own custom models
-
----
-
-## Core concepts for today
-
-- Navigating Bokeh's interfaces 
- - charts, plotting, and probably not models!
-- Bokeh server 
- - what it is, what it isn't, do I need it
-- Sharing your work 
- - notebook, standalone files, server 
-- Awareness of the Bokeh ecosystem
 
 ---
 
