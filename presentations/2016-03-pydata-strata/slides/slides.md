@@ -20,21 +20,6 @@ http://github.com/bokeh/bokeh-demos/
 
 ---
 
-## Getting set-up
-
-- In order of simplicity:
- - Anaconda https://www.continuum.io/downloads
- - **Miniconda http://conda.pydata.org/miniconda.html (my personal preference)**
-   
-    `conda install bokeh`
-
- - Pip (can take a long time due to dependencies)
-
-      `pip install bokeh`
-
-***You don't need to do this now, we will be available to help duing lunch, so you're ready for the tutorials***
-
----
 
 ## Bokeh
 
@@ -46,6 +31,90 @@ http://github.com/bokeh/bokeh-demos/
 - large data
 - streaming data
 
+
+---
+
+## Core concepts for today
+
+- Overview of Bokeh's functionality
+- Navigating Bokeh's interfaces 
+ - charts, plotting, and probably not models!
+- Bokeh server 
+ - what it is, what it isn't, do I need it
+- Sharing your work 
+ - notebook, standalone files, server 
+- Awareness of the Bokeh ecosystem
+
+---
+<img class="slide_image" src="images/box_chart.png" style="position: absolute; top: -20px; right: 0; width: 200px; height: 200px">
+### Demo 1 - Charts in the notebook
+quick & easy data exploration
+
+* work in the notebok
+```python
+from bokeh.io import output_notebook, show
+output_notebook()
+```
+* make charts - simple one-liners accept tabular data
+```python
+from bokeh.charts import Bar, BoxPlot, Histogram, Scatter....
+Scatter(df, x='mpg', y='hp', color='cyl')
+BoxPlot(df, values='mpg', label='cyl', marker='square')
+```
+
+<small>
+[bokeh.pydata.org/en/latest/docs/user_guide/charts.html](http://bokeh.pydata.org/en/latest/docs/user_guide/charts.html)
+</small>
+---
+<img class="slide_image" src="images/clustering.png" style="position: absolute; top: -50px; right: -50px; width: 400px; height: 200px">
+### Demo 2 - Server - clustering
+interact in the browser, run by python code
+```python
+def update_samples_or_dataset(attrname, old, new):
+    dataset = dataset_select.value
+    algorithm = algorithm_select.value
+    X, y = get_dataset(dataset, n_samples)
+    X, y_pred = clustering(X, algorithm, n_clusters)
+    source.data['x'] = X[:, 0]
+    source.data['y'] = X[:, 1]
+    
+algorithm_select = Select(value='MiniBatchKMeans', options=opts)
+algorithm_select.on_change('value', update_algorithm_or_clusters)
+```
+
+<small>
+[github.com/bokeh/bokeh/tree/master/examples/app/clustering](https://github.com/bokeh/bokeh/tree/master/examples/app/clustering)
+</small>
+---
+
+### Demo 3 - Server - streaming
+<img class="slide_image" src="images/ohlc.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: 250px">
+
+connect your plot to a streaming <br />
+data source
+
+bokeh will take care of the rest
+
+
+```python
+def update():
+    new_data = get_new_data()
+    source.stream(new_data, 300)
+    
+doc.add_periodic_callback(update, 50)
+```
+<small>
+[github.com/bokeh/bokeh/tree/master/examples/app/ohlc](https://github.com/bokeh/bokeh/tree/master/examples/app/ohlc)
+</small>
+---
+<img class="slide_image" src="images/datashader.png" style="position: absolute; top: 0px; right: 0px; width: 300px; height: 3 00px">
+### Demo 4 - Datashader
+Plotting **very** large datasets meaningfully
+
+Uses bokeh's interactivity, hooks into <br />
+powerful python libraries
+
+[datashader.readthedocs.org](http://datashader.readthedocs.org)
 
 ---
 
@@ -121,14 +190,71 @@ We'll come back to this multiple times today.
 
 ---
 
+# Charts
+
+---
+
+#### Charts
+
+---
+
+# Plotting
+
+---
+
+#### Plotting
+
+
+---
+
+### Output
+
+* output_notebook
+* output_file
+* embedding - file_html, components
+
+---
+
+### Resources
+
+* `INLINE` - in the file
+* `CDN` - load from web
+* There are oter options
+
+---
+
+# Server
+
+---
+
 ## Bokeh Server
 
 - deep interactivity
 - streaming data
 
 ---
+## Getting set-up
+
+- In order of simplicity:
+ - Anaconda https://www.continuum.io/downloads
+ - **Miniconda http://conda.pydata.org/miniconda.html (my personal preference)**
+   
+    `conda install bokeh`
+
+ - Pip (can take a long time due to dependencies)
+
+      `pip install bokeh`
+
+***You don't need to do this now, we will be available to help duing lunch, so you're ready for the tutorials***
+
+---
 
 # Appendix
+
+* compat
+* user & reference guide
+* search
+* examples
 
 ---
 

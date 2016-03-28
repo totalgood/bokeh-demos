@@ -36,4 +36,4 @@ def save_slides():
 if __name__ == '__main__':
     if not os.path.isfile(SLIDES_LOCATION):
         sys.exit('Please create %s' % SLIDES_LOCATION)
-    app.run('0.0.0.0', 8000, debug=True)
+    app.run('127.0.0.1', 8001, debug=True)
