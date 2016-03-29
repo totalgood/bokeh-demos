@@ -5,8 +5,6 @@
 - Sarah Bird [@birdsarah](https://twitter.com/birdsarah)
 - Bryan Van de Ven [@bryvdv](https://twitter.com/bryvdv)
 
-http://github.com/bokeh/bokeh-demos/
-
 <small>March 29th, 2016</small>
 
 
@@ -149,7 +147,7 @@ Thanks to:
 ## Bokeh - Ecosystem
 
 - Other language bindings: rbokeh (actively maintained), scala (activeley maintained), julia (not maintained), typescript (actively maintained)
-- Datashader - interact with BIG<sup>**</sup> data
+- Datashader - interact with BIG data
 - Write your own custom models
 
 ---
@@ -544,6 +542,7 @@ Docs: http://bokeh.pydata.org
 
 ---
 
+# Thank you
 ---
 
 ## Hacker-slides how-to
