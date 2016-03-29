@@ -390,28 +390,15 @@ Whitelisting your host
 
 
 ---
-## Getting set-up
+Everything from this morning:
 
-- In order of simplicity:
- - Anaconda https://www.continuum.io/downloads
- - **Miniconda http://conda.pydata.org/miniconda.html (my personal preference)**
-   
-    `conda install bokeh`
+https://github.com/bokeh/bokeh-demos/tree/strata-sj-2016/presentations/2016-03-pydata-strata
 
- - Pip (can take a long time due to dependencies)
+Getting set-up for this afternoon:
 
-      `pip install bokeh`
-
-***You don't need to do this now, we will be available to help duing lunch, so you're ready for the tutorials***
+https://github.com/bokeh/bokeh-notebooks/tree/master/tutorial
 
 ---
-
-# Appendix
-
-* compat
-* user & reference guide
-* search
-* examples
 
 ---
 

@@ -6,4 +6,5 @@ dependencies:
   - ipython-notebook
   - ipywidgets
   - scikit-learn
+  - flexx
   - flask # To run the slides locally
