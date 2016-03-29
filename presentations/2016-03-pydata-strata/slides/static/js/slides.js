@@ -14,7 +14,7 @@ function initializeReveal() {
     transitionSpeed: isPreview() ? 'fast' : 'default',
     embedded: isPreview() ? true : false,
     width: 1280,
-    height: 800,
+    height: 720,
 
       // Optional reveal.js plugins
     dependencies: [

@@ -377,6 +377,7 @@ body {
 }
 .reveal .slides {
   text-align: left;
+  background-image: url("../../images/logo-block.png");
 }
 .reveal .highlight {
   padding: 0 .2em;
@@ -399,7 +400,6 @@ body {
 }
 .reveal ul {
   padding-left: 0em;
-  margin-left: 0.5em;
 }
 .reveal ul ul {
   padding-left: 0em;
@@ -407,7 +407,7 @@ body {
 }
 .reveal li {
   margin-top: 0.1em;
-  list-style: "- " outside none;
+  list-style: disc outside none;
 }
 .reveal li li {
   list-style-image: none;

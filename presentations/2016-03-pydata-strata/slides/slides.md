@@ -46,7 +46,7 @@ http://github.com/bokeh/bokeh-demos/
 - Awareness of the Bokeh ecosystem
 
 ---
-<img class="slide_image" src="images/box_chart.png" style="position: absolute; top: -20px; right: 0; width: 200px; height: 200px">
+<img class="slide_image" src="images/box_chart.png" style="position: absolute; top: 0; right: 0; width: 300px; height: auto">
 ### Demo 1 - Charts in the notebook
 quick & easy data exploration
 
@@ -68,21 +68,22 @@ BoxPlot(df, values='mpg', label='cyl', marker='square')
 
 ---
 
-<img class="slide_image" src="images/clustering.png" style="position: absolute; top: -50px; right: -50px; width: 400px; height: 200px">
+<img class="slide_image" src="images/clustering.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: auto">
 ### Demo 2 - Server - clustering
-interact in the browser, run python code
-```python
-def update_samples_or_dataset(attrname, old, new):
-    dataset = dataset_select.value
-    algorithm = algorithm_select.value
-    X, y = get_dataset(dataset, n_samples)
-    X, y_pred = clustering(X, algorithm, n_clusters)
-    new_data = {'x': X[:, 0], 'y': X[:, 1]}
-    source.data = new_data
-    
-algorithm_select = Select(value='MiniBatchKMeans', options=opts)
-algorithm_select.on_change('value', update_algorithm_or_clusters)
-```
+* interact in the browser, run python code
+
+    ```python
+    def update_samples_or_dataset(attrname, old, new):
+        dataset = dataset_select.value
+        algorithm = algorithm_select.value
+        X, y = get_dataset(dataset, n_samples)
+        X, y_pred = clustering(X, algorithm, n_clusters)
+        new_data = {'x': X[:, 0], 'y': X[:, 1]}
+        source.data = new_data
+        
+    algorithm_select = Select(value='MiniBatchKMeans', options=opts)
+    algorithm_select.on_change('value', update_algorithm_or_clusters)
+    ```
 
 <small>
 [github.com/bokeh/bokeh/tree/master/examples/app/clustering](https://github.com/bokeh/bokeh/tree/master/examples/app/clustering)
@@ -91,28 +92,24 @@ algorithm_select.on_change('value', update_algorithm_or_clusters)
 ---
 
 ### Demo 3 - Server - streaming
-<img class="slide_image" src="images/ohlc.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: 250px">
+<img class="slide_image" src="images/ohlc.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: auto">
 
-connect your plot to a streaming <br />
-data source
-
-bokeh will take care of the rest
-
-
-```python
-def update():
-    new_data = get_new_data()
-    source.stream(new_data, 300)
-    
-doc.add_periodic_callback(update, 50)
-```
+* connect your plot to a streamingdata source
+* bokeh will take care of the rest
+    ```python
+    def update():
+        new_data = get_new_data()
+        source.stream(new_data, 300)
+        
+    doc.add_periodic_callback(update, 50)
+    ```
 <small>
 [github.com/bokeh/bokeh/tree/master/examples/app/ohlc](https://github.com/bokeh/bokeh/tree/master/examples/app/ohlc)
 </small>
 
 ---
 
-<img class="slide_image" src="images/datashader.png" style="position: absolute; top: 0px; right: 0px; width: 300px; height: 3 00px">
+<img class="slide_image" src="images/datashader.png" style="position: absolute; top: 0px; right: 0px; width: 300px; height: 300px">
 ### Demo 4 - Datashader
 Plotting **very** large datasets meaningfully
 
@@ -135,7 +132,12 @@ powerful python libraries
 - Awareness of the Bokeh ecosystem
 
 ---
+Thank you to:
 
+
+![numfocus](images/NumFocus.png)
+
+---
 ## Bokeh - Core
 
 - Python-based - http://bokeh.pydata.org
