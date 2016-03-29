@@ -347,7 +347,7 @@ Embedding
 
 ---
 
-## Server gotchas 1 - Data updating
+## Server Wisdom 1 - Data updating
 
 * update your ColumnDataSource in one go
 
@@ -364,30 +364,46 @@ source.data['x'] = [...]
 source.data['y'] = [...]
 ```
 
+Otherwise, the second way generates extra  unnecesary work, and can also cause visual stutter since `x`, `y` values don't update simulataneouly
+
 ---
 
-## Server gotchas 2 - Session cleanup
+## Server Wisdom 2 - Session cleanup
 
-Periodic callback
+To control how the Bokeh server cleans up old sessions (and their callbacks), use the options:
+
+```
 --unused-session-lifetime
+
 --check-unused-sessions
+```
+These are especially important to set if you are using periodic callbacks. 
 
 ---
 
-## Server gotchas 3 - Embedding
-
---allow-websocket-origin
-
----
-
-## Server
-
-Whitelisting your host
+## Server Wisdom 3 - Embedding
+If you want to embed a bokeh server app in a page on `foo.com` using `autoload_server` you must configure the bokeh server to accept connections from `foo.com` with an option like: 
+```
+--allow-websocket-origin foo.com
+```
 
 ---
 
 # Datashader
 
+Datashader is a graphics pipeline system for creating meaningful representations of large amounts of data. It breaks the creation of images into 3 steps:
+
+1. Projection
+
+Each record is projected into zero or more bins, based on a specified glyph.
+
+2. Aggregation
+
+Reductions are computed for each bin, compressing the potentially large dataset into a much smaller aggregate.
+
+3. Transformation
+
+These aggregates are then further processed to create an image.
 
 ---
 Everything from this morning:
