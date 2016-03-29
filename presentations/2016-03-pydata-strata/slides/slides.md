@@ -207,45 +207,31 @@ Step, Timeseries
 
 [reference](http://bokeh.pydata.org/en/latest/docs/reference/charts.html#module-bokeh.charts)
 
+notebooks/notebooks/Charts.ipynb
+
 Note: 
-would be nice to make a little visual grid of all of these
-dots vs scatter?
-what is blend
 box plot whiskers are: the lowest datum still within 1.5 IQR of the lower quartile, and the highest datum still within 1.5 IQR
 
 ---
 
+Inputs:
 
-
-
-Tall data is preferred  
-
-Common inputs:
-
-* values / label (Bar, Histogram, Area)
-* x / y (Scatter, Line)
+* categorical: values / label (Bar, Dot)
+* continuous: x / y (Scatter, Line)
 
 Defaults:
 
 * plot_width, plot_height, tools, legend, xgrid, ygrid, xlabel, ylabel, xscale, yscale, title_text_font_size, responsive.....
 
-Legend:
-
-* can pe positioned around the polot
-* sort_legend: List of tuples to use for sorting the legend - can be different than sorting used for the rest of the chart
-
 ---
 
 ### Becoming a charts power user
 
-* Understand:
- * Attribute Specification - `label=['col1','col2']`
- * blend - `blend('col1', 'col2', name='temp', labels_name='sensor')`
- * color - `color=color('a', palette=['red', 'green', 'blue'])`
-* Aggregations (sum, mean, count, nunique, median, min, max)
-* Chart operations - blend, stack
-* color, dodge
 * Set-up your defaults
+* Attributes - cat, color, marker
+* Aggregations - sum, mean, count, nunique, median, min, max
+* Data operations - blend, stack
+* Attribute Specification - `label=['col1','col2']`
 
 ---
 
@@ -275,16 +261,56 @@ At the heart of Bokeh is the `ColumnDataSource`
 
 ---
 
-#### Plotting
+```python
+from bokeh.plotting import figure
 
+p = figure(plot_width=400, plot_height=200, title='plot')
+p.circle(x=[1, 2, 3], y=[2, 4, 6])
+show(p)
+
+```
+<br />
+```python
+from bokeh.models import ColumnDataSource
+source = ColumnDataSource(data_frame)
+p = figure(plot_width=400, plot_height=200, title='plot')
+p.circle(x='x', y='y', source=source)
+show(p)
+```
+---
+
+```python
+from bokeh.models import ColumnDataSource
+source = ColumnDataSource(data_frame)
+p = figure(plot_width=400, plot_height=200, title='plot')
+p.circle(x='x1', y='y1', color='col2', size='col4', source=source)
+p.rect(x='x2', y='y2', source=source)
+show(p)
+```
 
 ---
 
+### Sharing ranges & sources
+
+```python
+from bokeh.plotting import figure
+
+p = figure(plot_width=400, plot_height=200, title='plot')
+p.circle(x=[1, 2, 3], y=[2, 4, 6])
+show(p)
+
+```
+
+[User Guide](http://bokeh.pydata.org/en/latest/docs/user_guide/interaction.html#linked-panning)
+
+[Examples - github.com/bokeh/bokeh/tree/0.11.1/examples/plotting](https://github.com/bokeh/bokeh/tree/0.11.1/examples/plotting)
+
+---
 ### Output
 
-* output_notebook
-* output_file
-* embedding - file_html, components
+* output_notebook()
+* output_file()
+* embedding - file_html(), components()
 
 ---
 
