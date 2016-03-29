@@ -13,6 +13,8 @@ function initializeReveal() {
     transition: 'slide', // none/fade/slide/convex/concave/zoom
     transitionSpeed: isPreview() ? 'fast' : 'default',
     embedded: isPreview() ? true : false,
+    width: 1280,
+    height: 800,
 
       // Optional reveal.js plugins
     dependencies: [
