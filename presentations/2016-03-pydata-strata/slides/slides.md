@@ -334,115 +334,18 @@ show(p)
  * drive scikit-learn from data point selection in 10 lines of code
  * perform complex downsampling on pan/zoom
 * streaming data
- * update visualizations from external data sources or sensors
- 
-See live hosted examples here:
-
-http://demo.bokehplots.com
 
 ---
 
-# How the server works
-
-![DataShader pipeline](images/server_arch.png)
-
-Reflect Python and JavaScript state automatically and transparently. 
+How the server works
 
 ---
 
-Sliders Example Walk-through
-
-* commom imports and data set up
-
-```
-import numpy as np
-
-from bokeh.plotting import Figure
-from bokeh.models import ColumnDataSource, HBox, VBoxForm
-from bokeh.models.widgets import Slider, TextInput
-from bokeh.io import curdoc
-
-N = 200
-x = np.linspace(0, 4*np.pi, N)
-y = np.sin(x)
-source = ColumnDataSource(data=dict(x=x, y=y))
-```
-
----
-Sliders Example Walk-through (cont.)
-
-* set up a plot
-
-```
-plot = Figure(plot_height=400, plot_width=400, title="my sine wave",
-              tools="crosshair,pan,reset,resize,save,wheel_zoom",
-              x_range=[0, 4*np.pi], y_range=[-2.5, 2.5])
-
-plot.line('x', 'y', source=source, line_width=3, line_alpha=0.6)
-```
-
-**Note** -- use `Figure` (capital F) if the plot will be part of a larger layout, or `figure` (lower f) if you will just be adding the plot and nothing else. 
+Some code that shows the core principles of bokeh server
 
 ---
 
-Sliders Example Walk-through (cont.)
-
-* set up some widgets
-
-```
-text = TextInput(title="title", value='my sine wave')
-
-offset = Slider(title="offset", value=0.0, start=-5.0, end=5.0, step=0.1)
-
-amplitude = Slider(title="amplitude", value=1.0, start=-5.0, end=5.0)
-
-phase = Slider(title="phase", value=0.0, start=0.0, end=2*np.pi)
-
-freq = Slider(title="frequency", value=1.0, start=0.1, end=5.1)
-```
-
----
-
-Sliders Example Walk-through (cont.)
-
-* set up some some callbacks
-
-```
-def update_title(attrname, old, new):
-    plot.title = text.value
-
-text.on_change('value', update_title)
-
-def update_data(attrname, old, new):
-
-    # Get the current slider values
-    a = amplitude.value
-    b = offset.value
-    w = phase.value
-    k = freq.value
-
-    # Generate the new curve
-    x = np.linspace(0, 4*np.pi, N)
-    y = a*np.sin(k*x + w) + b
-
-    source.data = dict(x=x, y=y)
-
-for w in [offset, amplitude, phase, freq]:
-    w.on_change('value', update_data)
-```
-
----
-
-Sliders Example Walk-through (cont.)
-
-* set up some layout and add to the document
-
-```
-
-inputs = VBoxForm(children=[text, offset, amplitude, phase, freq])
-
-curdoc().add_root(HBox(children=[inputs, plot], width=800))
-```
+Embedding
 
 ---
 
@@ -488,19 +391,9 @@ If you want to embed a bokeh server app in a page on `foo.com` using `autoload_s
 
 ---
 
-## Server Wisdom 4 - `figure`/`Figure`
-
-Some API clunkiness will be improved in 0.12, rules to remember for now:
-
-* lower case (`figure`, `hplot`, `vplot`, etc) automatically add objects to the "current document"
-* upper case (`Figure`, `HBox`, `VBox`, etc) DO NOT automatically add objects to the "current document"
-
-typically use upper-case versions when building up more complicated nested layouts. 
-
----
-
 # Datashader
 
+---
 Datashader is a graphics pipeline system for creating meaningful representations of large amounts of data. It breaks the creation of images into 3 steps:
 
 1. Projection
@@ -516,25 +409,11 @@ Reductions are computed for each bin, compressing the potentially large dataset 
 These aggregates are then further processed to create an image.
 
 ---
-
-# Datashader
-
-![DataShader pipeline](images/dspipe.png)
-
----
-
-# Datashader
-
-Some pre-executed static example notebooks can be viewed online at 
-
-https://anaconda.org/jbednar/notebooks
-
----
 Everything from this morning:
 
 https://github.com/bokeh/bokeh-demos/tree/strata-sj-2016/presentations/2016-03-pydata-strata
 
-Getting set-up for this afternoon (installing, downloading the exercise notebooks):
+Getting set-up for this afternoon:
 
 https://github.com/bokeh/bokeh-notebooks/tree/master/tutorial
 
