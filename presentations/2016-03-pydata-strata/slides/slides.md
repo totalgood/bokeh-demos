@@ -14,9 +14,9 @@ http://github.com/bokeh/bokeh-demos/
 
 ## Overview
 
-- 11:30 - 12:30 Intro to Bokeh ecosystem (code-along)
+- 11:30 - 12:30 Intro to Bokeh  
 - 12:30 - 13:30 LUNCH
-- 13:30 - 14:30 Hands-on examples (tutorials or bring your own data)
+- 13:30 - 14:30 Hands-on
 
 ---
 
@@ -530,13 +530,17 @@ Some pre-executed static example notebooks can be viewed online at
 https://anaconda.org/jbednar/notebooks
 
 ---
-Everything from this morning:
+This morning:
 
-https://github.com/bokeh/bokeh-demos/tree/strata-sj-2016/presentations/2016-03-pydata-strata
+https://github.com/bokeh/bokeh-demos/tree/master/presentations/2016-03-pydata-strata
 
 Getting set-up for this afternoon (installing, downloading the exercise notebooks):
 
 https://github.com/bokeh/bokeh-notebooks/tree/master/tutorial
+<hr />
+Mailing list: http://groups.google.com/a/continuum.io/forum/#!forum/bokeh
+
+Docs: http://bokeh.pydata.org
 
 ---
 
