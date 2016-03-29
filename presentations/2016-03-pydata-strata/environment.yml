@@ -4,6 +4,6 @@ dependencies:
   - bokeh
   - pandas
   - ipython-notebook
+  - ipywidgets
   - scikit-learn
-  - xlrd
   - flask # To run the slides locally
