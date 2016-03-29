@@ -1,4 +1,4 @@
-name: strata_tutorial_san_jose_2
+name: strata_tutorial_san_jose
 dependencies:
   - python>=3.4
   - bokeh
