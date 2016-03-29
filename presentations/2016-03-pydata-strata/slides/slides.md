@@ -46,7 +46,7 @@ http://github.com/bokeh/bokeh-demos/
 - Awareness of the Bokeh ecosystem
 
 ---
-<img class="slide_image" src="images/box_chart.png" style="position: absolute; top: 0; right: 0; width: 300px; height: auto">
+<img class="slide_image" src="images/box_chart.png" style="position: absolute; top: -20px; right: 0; width: 200px; height: 200px">
 ### Demo 1 - Charts in the notebook
 quick & easy data exploration
 
@@ -68,22 +68,21 @@ BoxPlot(df, values='mpg', label='cyl', marker='square')
 
 ---
 
-<img class="slide_image" src="images/clustering.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: auto">
+<img class="slide_image" src="images/clustering.png" style="position: absolute; top: -50px; right: -50px; width: 400px; height: 200px">
 ### Demo 2 - Server - clustering
-* interact in the browser, run python code
-
-    ```python
-    def update_samples_or_dataset(attrname, old, new):
-        dataset = dataset_select.value
-        algorithm = algorithm_select.value
-        X, y = get_dataset(dataset, n_samples)
-        X, y_pred = clustering(X, algorithm, n_clusters)
-        new_data = {'x': X[:, 0], 'y': X[:, 1]}
-        source.data = new_data
-        
-    algorithm_select = Select(value='MiniBatchKMeans', options=opts)
-    algorithm_select.on_change('value', update_algorithm_or_clusters)
-    ```
+interact in the browser, run python code
+```python
+def update_samples_or_dataset(attrname, old, new):
+    dataset = dataset_select.value
+    algorithm = algorithm_select.value
+    X, y = get_dataset(dataset, n_samples)
+    X, y_pred = clustering(X, algorithm, n_clusters)
+    new_data = {'x': X[:, 0], 'y': X[:, 1]}
+    source.data = new_data
+    
+algorithm_select = Select(value='MiniBatchKMeans', options=opts)
+algorithm_select.on_change('value', update_algorithm_or_clusters)
+```
 
 <small>
 [github.com/bokeh/bokeh/tree/master/examples/app/clustering](https://github.com/bokeh/bokeh/tree/master/examples/app/clustering)
@@ -92,24 +91,28 @@ BoxPlot(df, values='mpg', label='cyl', marker='square')
 ---
 
 ### Demo 3 - Server - streaming
-<img class="slide_image" src="images/ohlc.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: auto">
+<img class="slide_image" src="images/ohlc.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: 250px">
 
-* connect your plot to a streamingdata source
-* bokeh will take care of the rest
-    ```python
-    def update():
-        new_data = get_new_data()
-        source.stream(new_data, 300)
-        
-    doc.add_periodic_callback(update, 50)
-    ```
+connect your plot to a streaming <br />
+data source
+
+bokeh will take care of the rest
+
+
+```python
+def update():
+    new_data = get_new_data()
+    source.stream(new_data, 300)
+    
+doc.add_periodic_callback(update, 50)
+```
 <small>
 [github.com/bokeh/bokeh/tree/master/examples/app/ohlc](https://github.com/bokeh/bokeh/tree/master/examples/app/ohlc)
 </small>
 
 ---
 
-<img class="slide_image" src="images/datashader.png" style="position: absolute; top: 0px; right: 0px; width: 300px; height: 300px">
+<img class="slide_image" src="images/datashader.png" style="position: absolute; top: 0px; right: 0px; width: 300px; height: 3 00px">
 ### Demo 4 - Datashader
 Plotting **very** large datasets meaningfully
 
@@ -132,12 +135,7 @@ powerful python libraries
 - Awareness of the Bokeh ecosystem
 
 ---
-Thank you to:
 
-
-![numfocus](images/NumFocus.png)
-
----
 ## Bokeh - Core
 
 - Python-based - http://bokeh.pydata.org
@@ -334,18 +332,115 @@ show(p)
  * drive scikit-learn from data point selection in 10 lines of code
  * perform complex downsampling on pan/zoom
 * streaming data
+ * update visualizations from external data sources or sensors
+ 
+See live hosted examples here:
+
+http://demo.bokehplots.com
 
 ---
 
-How the server works
+# How the server works
+
+![DataShader pipeline](images/server_arch.png)
+
+Reflect Python and JavaScript state automatically and transparently. 
 
 ---
 
-Some code that shows the core principles of bokeh server
+Sliders Example Walk-through
+
+* commom imports and data set up
+
+```
+import numpy as np
+
+from bokeh.plotting import Figure
+from bokeh.models import ColumnDataSource, HBox, VBoxForm
+from bokeh.models.widgets import Slider, TextInput
+from bokeh.io import curdoc
+
+N = 200
+x = np.linspace(0, 4*np.pi, N)
+y = np.sin(x)
+source = ColumnDataSource(data=dict(x=x, y=y))
+```
+
+---
+Sliders Example Walk-through (cont.)
+
+* set up a plot
+
+```
+plot = Figure(plot_height=400, plot_width=400, title="my sine wave",
+              tools="crosshair,pan,reset,resize,save,wheel_zoom",
+              x_range=[0, 4*np.pi], y_range=[-2.5, 2.5])
+
+plot.line('x', 'y', source=source, line_width=3, line_alpha=0.6)
+```
+
+**Note** -- use `Figure` (capital F) if the plot will be part of a larger layout, or `figure` (lower f) if you will just be adding the plot and nothing else. 
 
 ---
 
-Embedding
+Sliders Example Walk-through (cont.)
+
+* set up some widgets
+
+```
+text = TextInput(title="title", value='my sine wave')
+
+offset = Slider(title="offset", value=0.0, start=-5.0, end=5.0, step=0.1)
+
+amplitude = Slider(title="amplitude", value=1.0, start=-5.0, end=5.0)
+
+phase = Slider(title="phase", value=0.0, start=0.0, end=2*np.pi)
+
+freq = Slider(title="frequency", value=1.0, start=0.1, end=5.1)
+```
+
+---
+
+Sliders Example Walk-through (cont.)
+
+* set up some some callbacks
+
+```
+def update_title(attrname, old, new):
+    plot.title = text.value
+
+text.on_change('value', update_title)
+
+def update_data(attrname, old, new):
+
+    # Get the current slider values
+    a = amplitude.value
+    b = offset.value
+    w = phase.value
+    k = freq.value
+
+    # Generate the new curve
+    x = np.linspace(0, 4*np.pi, N)
+    y = a*np.sin(k*x + w) + b
+
+    source.data = dict(x=x, y=y)
+
+for w in [offset, amplitude, phase, freq]:
+    w.on_change('value', update_data)
+```
+
+---
+
+Sliders Example Walk-through (cont.)
+
+* set up some layout and add to the document
+
+```
+
+inputs = VBoxForm(children=[text, offset, amplitude, phase, freq])
+
+curdoc().add_root(HBox(children=[inputs, plot], width=800))
+```
 
 ---
 
@@ -391,9 +486,19 @@ If you want to embed a bokeh server app in a page on `foo.com` using `autoload_s
 
 ---
 
-# Datashader
+## Server Wisdom 4 - `figure`/`Figure`
+
+Some API clunkiness will be improved in 0.12, rules to remember for now:
+
+* lower case (`figure`, `hplot`, `vplot`, etc) automatically add objects to the "current document"
+* upper case (`Figure`, `HBox`, `VBox`, etc) DO NOT automatically add objects to the "current document"
+
+typically use upper-case versions when building up more complicated nested layouts. 
 
 ---
+
+# Datashader
+
 Datashader is a graphics pipeline system for creating meaningful representations of large amounts of data. It breaks the creation of images into 3 steps:
 
 1. Projection
@@ -409,11 +514,25 @@ Reductions are computed for each bin, compressing the potentially large dataset 
 These aggregates are then further processed to create an image.
 
 ---
+
+# Datashader
+
+![DataShader pipeline](images/dspipe.png)
+
+---
+
+# Datashader
+
+Some pre-executed static example notebooks can be viewed online at 
+
+https://anaconda.org/jbednar/notebooks
+
+---
 Everything from this morning:
 
 https://github.com/bokeh/bokeh-demos/tree/strata-sj-2016/presentations/2016-03-pydata-strata
 
-Getting set-up for this afternoon:
+Getting set-up for this afternoon (installing, downloading the exercise notebooks):
 
 https://github.com/bokeh/bokeh-notebooks/tree/master/tutorial
 
