@@ -333,7 +333,10 @@ show(p)
  * perform complex downsampling on pan/zoom
 * streaming data
  * update visualizations from external data sources or sensors
- * 
+ 
+See live hosted examples here:
+
+http://demo.bokehplots.com
 
 ---
 
@@ -529,7 +532,7 @@ Everything from this morning:
 
 https://github.com/bokeh/bokeh-demos/tree/strata-sj-2016/presentations/2016-03-pydata-strata
 
-Getting set-up for this afternoon:
+Getting set-up for this afternoon (installing, downloading the exercise notebooks):
 
 https://github.com/bokeh/bokeh-notebooks/tree/master/tutorial
 
