@@ -438,9 +438,6 @@ inputs = VBoxForm(children=[text, offset, amplitude, phase, freq])
 
 curdoc().add_root(HBox(children=[inputs, plot], width=800))
 ```
----
-
-Embedding
 
 ---
 
