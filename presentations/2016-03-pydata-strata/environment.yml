@@ -1,5 +1,6 @@
-name: strata_tutorial_san_jose
+name: strata_tutorial_san_jose_2
 dependencies:
+  - python>=3.4
   - bokeh
   - pandas
   - ipython-notebook
