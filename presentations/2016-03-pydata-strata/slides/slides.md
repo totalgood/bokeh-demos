@@ -183,17 +183,6 @@ We'll come back to this multiple times today.
 
 ---
 
-## Interfaces
-
-* Charts (high speed)
-* Plotting (sensible defaults)
-* Models (high customization)
-
-We'll come back to this multiple times today.
-
-
----
-
 # Charts
 
 ---
