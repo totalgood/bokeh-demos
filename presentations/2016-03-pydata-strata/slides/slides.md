@@ -46,7 +46,7 @@ http://github.com/bokeh/bokeh-demos/
 - Awareness of the Bokeh ecosystem
 
 ---
-<img class="slide_image" src="images/box_chart.png" style="position: absolute; top: -20px; right: 0; width: 200px; height: 200px">
+<img class="slide_image" src="images/box_chart.png" style="position: absolute; top: 0px; right: 0; width: 300px; height: auto">
 ### Demo 1 - Charts in the notebook
 quick & easy data exploration
 
@@ -68,7 +68,7 @@ BoxPlot(df, values='mpg', label='cyl', marker='square')
 
 ---
 
-<img class="slide_image" src="images/clustering.png" style="position: absolute; top: -50px; right: -50px; width: 400px; height: 200px">
+<img class="slide_image" src="images/clustering.png" style="position: absolute; top: 0px; right: 0px; width: 300px; height: auto">
 ### Demo 2 - Server - clustering
 interact in the browser, run python code
 ```python
@@ -91,28 +91,24 @@ algorithm_select.on_change('value', update_algorithm_or_clusters)
 ---
 
 ### Demo 3 - Server - streaming
-<img class="slide_image" src="images/ohlc.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: 250px">
+<img class="slide_image" src="images/ohlc.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: auto">
 
-connect your plot to a streaming <br />
-data source
-
-bokeh will take care of the rest
-
-
-```python
-def update():
-    new_data = get_new_data()
-    source.stream(new_data, 300)
-    
-doc.add_periodic_callback(update, 50)
-```
+* connect your plot to a streaming data source
+* bokeh will take care of the rest
+    ```python
+    def update():
+        new_data = get_new_data()
+        source.stream(new_data, 300)
+        
+    doc.add_periodic_callback(update, 50)
+    ```
 <small>
 [github.com/bokeh/bokeh/tree/master/examples/app/ohlc](https://github.com/bokeh/bokeh/tree/master/examples/app/ohlc)
 </small>
 
 ---
 
-<img class="slide_image" src="images/datashader.png" style="position: absolute; top: 0px; right: 0px; width: 300px; height: 3 00px">
+<img class="slide_image" src="images/datashader.png" style="position: absolute; top: 0px; right: 0px; width: 400px; height: auto">
 ### Demo 4 - Datashader
 Plotting **very** large datasets meaningfully
 
@@ -134,6 +130,10 @@ powerful python libraries
  - notebook, standalone files, server 
 - Awareness of the Bokeh ecosystem
 
+---
+Thanks to:
+
+![numfocus](images/NumFocus.png)
 ---
 
 ## Bokeh - Core
@@ -207,7 +207,7 @@ Step, Timeseries
 
 [reference](http://bokeh.pydata.org/en/latest/docs/reference/charts.html#module-bokeh.charts)
 
-notebooks/notebooks/Charts.ipynb
+/notebooks/Charts.ipynb
 
 Note: 
 box plot whiskers are: the lowest datum still within 1.5 IQR of the lower quartile, and the highest datum still within 1.5 IQR
@@ -498,6 +498,8 @@ typically use upper-case versions when building up more complicated nested layou
 ---
 
 # Datashader
+
+---
 
 Datashader is a graphics pipeline system for creating meaningful representations of large amounts of data. It breaks the creation of images into 3 steps:
 
